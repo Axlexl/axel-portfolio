@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #020818;
+  color: #e2e8f0;
+  overflow-x: hidden;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar       { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #6c63ff; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #a78bfa; }
+
+/* ── Gradient text ── */
+.gradient-text {
+  background: linear-gradient(135deg, #6c63ff, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Placeholders ── */
+input::placeholder, textarea::placeholder { color: #64748b; }
+
+/* ── Glow card ──
+   Full perimeter border glow + outer ambient bloom on hover.
+   Apply class="glow-card" to any card element.
+   In light mode also add class="glow-light".
+*/
+.glow-card {
+  position: relative;
+  isolation: isolate;
+  transition: box-shadow 0.35s ease, border-color 0.35s ease, transform 0.25s ease;
+}
+
+/* Full glowing border on hover — lights up entire edge */
+.glow-card::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(135deg, #6c63ff, #a78bfa, #0ea5e9, #6c63ff);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.glow-card:hover::before {
+  opacity: 1;
+}
+
+/* Outer ambient purple/blue bloom on hover */
+.glow-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  box-shadow:
+    0 0 0 1px rgba(108, 99, 255, 0.6),
+    0 0 15px 3px rgba(108, 99, 255, 0.55),
+    0 0 40px 8px rgba(108, 99, 255, 0.30),
+    0 0 80px 14px rgba(108, 99, 255, 0.15),
+    0 0 120px 20px rgba(14, 165, 233, 0.08);
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.glow-card:hover::after {
+  opacity: 1;
+}
+
+/* Light mode — same intensity */
+.glow-light:hover::after {
+  box-shadow:
+    0 0 0 1.5px rgba(108, 99, 255, 0.65),
+    0 0 15px 4px rgba(108, 99, 255, 0.45),
+    0 0 40px 8px rgba(108, 99, 255, 0.25),
+    0 0 80px 14px rgba(108, 99, 255, 0.12),
+    0 0 120px 20px rgba(14, 165, 233, 0.06);
+}
+
+/* ── Tailwind responsive helpers used by Hero ── */
+@media (min-width: 1024px) {
+  .lg\:flex-row    { flex-direction: row !important; }
+  .lg\:items-center { align-items: center !important; }
+}
+@media (min-width: 768px) {
+  .md\:flex        { display: flex !important; }
+  .hidden.md\:flex { display: flex !important; }
+}
+.hidden { display: none !important; }

@@ -1,0 +1,190 @@
+export const personalInfo = {
+  name: 'Axel Socobos',
+  title: '3rd Year Information Technology Student',
+  bio: 'Aspiring developer who loves building innovative and meaningful solutions through code. Always learning, always improving.',
+  email: 'axelsocobos12@gmail.com',
+  phone: '0994095075',
+  location: 'Philippines',
+  github: 'https://github.com/Axlexl',
+  messenger: 'https://www.messenger.com/e2ee/t/9923001771077896',
+  facebook: 'https://www.facebook.com/axel.socobos',
+  linkedin: '',
+  quote: "Code is not just what I write, it's how I solve problems.",
+  stats: [
+    { value: '3+', label: 'Years Learning' },
+    { value: '15+', label: 'Projects Completed' },
+    { value: '10+', label: 'Technologies' },
+    { value: 'Always', label: 'Learning' },
+  ],
+}
+
+export const techStack = [
+  { name: 'Vite', icon: 'SiVite', color: '#646cff' },
+  { name: 'HTML', icon: 'SiHtml5', color: '#e34f26' },
+  { name: 'CSS', icon: 'SiCss3', color: '#1572b6' },
+  { name: 'JavaScript', icon: 'SiJavascript', color: '#f7df1e' },
+  { name: 'Node.js', icon: 'SiNodedotjs', color: '#3c873a' },
+  { name: 'MySQL', icon: 'SiMysql', color: '#4479a1' },
+  { name: 'C++', icon: 'SiCplusplus', color: '#00599c' },
+  { name: 'C#', icon: 'SiCsharp', color: '#9b4993' },
+  { name: 'Java', icon: 'SiJava', color: '#ea2d2e' },
+  { name: 'Kotlin', icon: 'SiKotlin', color: '#7f52ff' },
+  { name: 'React.js', icon: 'SiReact', color: '#61dafb' },
+  { name: 'React Native', icon: 'SiReact', color: '#61dafb' },
+  { name: 'Electron', icon: 'SiElectron', color: '#47848f' },
+]
+
+export const projects = [
+  {
+    id: 1,
+    title: 'Boarding House Management System',
+    description: 'A system that manages tenants, rooms, payments, and utilities for boarding houses.',
+    image: '🏠',
+    tags: ['Vite', 'React.js', 'Node.js', 'MySQL'],
+    category: 'Web',
+    github: 'https://github.com/Axlexl',
+    featured: true,
+  },
+  {
+    id: 2,
+    title: 'Task Manager App',
+    description: 'A mobile task management app with user authentication and cloud sync.',
+    image: '📋',
+    tags: ['React Native Expo', 'Node.js', 'MySQL'],
+    category: 'Mobile',
+    github: 'https://github.com/Axlexl',
+    featured: true,
+  },
+  {
+    id: 3,
+    title: 'School Inventory System (Desktop)',
+    description: 'A desktop application for managing school assets and inventory records.',
+    image: '🏫',
+    tags: ['Electron', 'Node.js', 'MySQL'],
+    category: 'Desktop',
+    github: 'https://github.com/Axlexl',
+    featured: true,
+  },
+  {
+    id: 4,
+    title: 'Personal Expense Tracker',
+    description: 'Track income, expenses, and generate reports with charts and insights.',
+    image: '💰',
+    tags: ['React.js', 'Node.js', 'MySQL'],
+    category: 'Web',
+    github: 'https://github.com/Axlexl',
+    featured: true,
+  },
+  {
+    id: 5,
+    title: 'Student Grade Calculator',
+    description: 'A utility app that computes final grades based on different grading systems.',
+    image: '📊',
+    tags: ['React.js', 'JavaScript'],
+    category: 'Web',
+    github: 'https://github.com/Axlexl',
+    featured: false,
+  },
+  {
+    id: 6,
+    title: 'E-Commerce Mobile App',
+    description: 'A full-featured shopping app with cart, checkout, and order tracking.',
+    image: '🛒',
+    tags: ['React Native Expo', 'Node.js', 'MySQL'],
+    category: 'Mobile',
+    github: 'https://github.com/Axlexl',
+    featured: false,
+  },
+]
+
+export const skills = [
+  {
+    category: 'Frontend',
+    color: '#6c63ff',
+    items: [
+      { name: 'React.js', level: 85 },
+      { name: 'HTML & CSS', level: 90 },
+      { name: 'JavaScript', level: 82 },
+      { name: 'Tailwind CSS', level: 80 },
+      { name: 'Vite', level: 78 },
+    ],
+  },
+  {
+    category: 'Mobile',
+    color: '#a78bfa',
+    items: [
+      { name: 'React Native Expo', level: 75 },
+      { name: 'Kotlin', level: 60 },
+      { name: 'Java (Android)', level: 65 },
+    ],
+  },
+  {
+    category: 'Backend',
+    color: '#34d399',
+    items: [
+      { name: 'Node.js', level: 78 },
+      { name: 'Express.js', level: 75 },
+      { name: 'MySQL', level: 80 },
+    ],
+  },
+  {
+    category: 'Desktop',
+    color: '#f59e0b',
+    items: [
+      { name: 'Electron', level: 70 },
+      { name: 'C#', level: 65 },
+      { name: 'C++', level: 60 },
+    ],
+  },
+]
+
+export const experience = [
+  {
+    id: 1,
+    role: 'Freelance Web Developer',
+    company: 'Self-Employed',
+    period: '2023 – Present',
+    description: 'Building custom web applications for small businesses and individuals. Developed boarding house and inventory management systems.',
+    tags: ['React.js', 'Node.js', 'MySQL'],
+  },
+  {
+    id: 2,
+    role: 'Mobile App Developer (Academic)',
+    company: 'University IT Projects',
+    period: '2022 – 2023',
+    description: 'Developed multiple mobile applications using React Native Expo as part of university coursework and group projects.',
+    tags: ['React Native', 'Firebase'],
+  },
+]
+
+export const education = [
+  {
+    id: 1,
+    degree: 'Bachelor of Science in Information Technology',
+    school: 'Holy Cross of Davao College, Inc.',
+    period: '2024 – Present',
+    description: 'Currently pursuing BSIT with focus on software development, web technologies, and mobile computing.',
+    badge: 'Current',
+  },
+  {
+    id: 2,
+    degree: 'Senior High School – ABM Strand',
+    school: 'Holy Cross Bunawan, Inc.',
+    period: '2023 – 2024',
+    description: 'Accountancy, Business, and Management strand. Developed strong foundations in business and analytical thinking.',
+  },
+  {
+    id: 3,
+    degree: 'Junior High School',
+    school: 'Holy Cross Bunawan, Inc.',
+    period: '2018 – 2022',
+    description: 'Completed junior high school with a strong academic record.',
+  },
+  {
+    id: 4,
+    degree: 'Elementary',
+    school: 'Daniel M. Perez Central Elementary School',
+    period: '2012 – 2018',
+    description: 'Completed elementary education with honors.',
+  },
+]
