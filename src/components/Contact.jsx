@@ -86,7 +86,7 @@ export default function Contact({ darkMode }) {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.7 }}
           style={{ textAlign: 'center', marginBottom: 52 }}
         >
           <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase',
@@ -290,6 +290,7 @@ export default function Contact({ darkMode }) {
     </section>
   )
 }
+
 
 
 

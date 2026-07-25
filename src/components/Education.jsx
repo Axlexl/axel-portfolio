@@ -19,7 +19,7 @@ export default function Education({ darkMode }) {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.7 }}
           style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 48 }}
         >
           <div style={{
@@ -44,7 +44,7 @@ export default function Education({ darkMode }) {
               key={item.id}
               initial={{ opacity: 0, y: 36, scale: 0.96 }}
               animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
-              transition={{ delay: i * 0.12, duration: 0.5, ease: 'easeOut' }}
+              transition={{ delay: i * 0.16, duration: 0.7, ease: 'easeOut' }}
               whileHover={{ y: -8 }}
               className={`glow-card${!darkMode ? ' glow-light' : ''}`}
               style={{
@@ -111,3 +111,4 @@ export default function Education({ darkMode }) {
     </section>
   )
 }
+

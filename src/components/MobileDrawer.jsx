@@ -90,7 +90,7 @@ export default function MobileDrawer({ darkMode, setDarkMode, activeSection, dra
                     onClick={() => scrollTo(id)}
                     initial={{ opacity: 0, x: 30 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.05 }}
+                    transition={{ delay: i * 0.09 }}
                     style={{
                       display: 'flex', alignItems: 'center', gap: 12,
                       padding: '11px 14px', borderRadius: 12, border: 'none', cursor: 'pointer',
@@ -208,6 +208,7 @@ export default function MobileDrawer({ darkMode, setDarkMode, activeSection, dra
     </AnimatePresence>
   )
 }
+
 
 
 

@@ -19,7 +19,7 @@ export default function Experience({ darkMode }) {
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.7 }}
           style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 48 }}
         >
           <div style={{ width: 44, height: 44, borderRadius: 12, flexShrink: 0, background: 'rgba(108,99,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -86,6 +86,7 @@ export default function Experience({ darkMode }) {
     </section>
   )
 }
+
 
 
 

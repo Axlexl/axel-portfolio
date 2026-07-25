@@ -2,11 +2,12 @@ import { useRef } from 'react'
 import { useInView } from 'framer-motion'
 
 /**
- * Returns [ref, isInView] — fires once when the element scrolls into view.
- * @param {number} amount  fraction of element visible before triggering (0–1)
+ * Fires once when element scrolls into view.
+ * Uses a low threshold so it triggers early (before fully visible),
+ * giving animations time to play smoothly without rushing.
  */
-export function useScrollReveal(amount = 0.15) {
+export function useScrollReveal(amount = 0.08) {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, amount })
+  const inView = useInView(ref, { once: true, amount, margin: '0px 0px -40px 0px' })
   return [ref, inView]
 }

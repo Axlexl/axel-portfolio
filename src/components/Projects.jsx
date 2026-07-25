@@ -310,7 +310,7 @@ export default function Projects({ darkMode }) {
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }} style={{ marginBottom: 36 }}
+          transition={{ duration: 0.7 }} style={{ marginBottom: 36 }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 20 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -357,7 +357,7 @@ export default function Projects({ darkMode }) {
                 initial={{ opacity: 0, y: 30, scale: 0.94 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ delay: i * 0.06, duration: 0.4 }}
+                transition={{ delay: i * 0.10, duration: 0.4 }}
                 whileHover={{ y: -8 }}
                 className={`glow-card${!darkMode ? ' glow-light' : ''}`}
                 style={{
@@ -450,3 +450,4 @@ export default function Projects({ darkMode }) {
     </section>
   )
 }
+
