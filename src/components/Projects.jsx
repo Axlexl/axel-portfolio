@@ -353,7 +353,6 @@ export default function Projects({ darkMode }) {
   const [showAll, setShowAll] = useState(false)
   const [demoProject, setDemoProject] = useState(null)
   const [lockProject, setLockProject] = useState(null)
-  const [lightboxImg, setLightboxImg] = useState(null)
 
   const filtered  = filter === 'All' ? projects : projects.filter(p => p.category === filter)
   const displayed = showAll ? filtered : filtered.slice(0, 4)
@@ -367,7 +366,6 @@ export default function Projects({ darkMode }) {
     <section id="projects" style={{ padding: '80px 24px' }}>
       {demoProject && <VideoModal project={demoProject} onClose={() => setDemoProject(null)} />}
       {lockProject && <CodeLockModal project={lockProject} onClose={() => setLockProject(null)} />}
-      {lightboxImg && <ImageLightbox src={lightboxImg.src} alt={lightboxImg.alt} onClose={() => setLightboxImg(null)} />}
 
       <div style={{ maxWidth: 1100, margin: '0 auto' }} ref={ref}>
 
@@ -434,44 +432,29 @@ export default function Projects({ darkMode }) {
               >
                 {/* Inner wrapper clips the content (image etc) without affecting glow */}
                 <div style={{ borderRadius: 20, overflow: 'hidden', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                {/* Banner — click to open fullscreen */}
-                <div
-                  onClick={() => project.thumbnail && setLightboxImg({ src: project.thumbnail, alt: project.title })}
+                {/* Banner — expands on hover to show more of the screenshot */}
+                <motion.div
+                  initial={{ height: 96 }}
+                  whileHover={project.thumbnail ? { height: 200 } : { height: 96 }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                   style={{
-                    height: 96, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 44, flexShrink: 0, overflow: 'hidden', position: 'relative',
-                    cursor: project.thumbnail ? 'zoom-in' : 'default',
+                    display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
+                    fontSize: 44, flexShrink: 0, overflow: 'hidden',
                     background: darkMode
                       ? 'linear-gradient(135deg,rgba(108,99,255,0.18),rgba(167,139,250,0.10))'
                       : 'linear-gradient(135deg,rgba(108,99,255,0.10),rgba(167,139,250,0.06))',
                   }}
                 >
                   {project.thumbnail ? (
-                    <>
-                      <img src={project.thumbnail} alt={project.title}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center', display: 'block', transition: 'transform 0.35s ease' }}
-                        onMouseEnter={e => e.target.style.transform = 'scale(1.08)'}
-                        onMouseLeave={e => e.target.style.transform = 'scale(1)'}
-                        onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }}
-                      />
-                      {/* Zoom overlay on hover */}
-                      <div style={{
-                        position: 'absolute', inset: 0,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        background: 'rgba(0,0,0,0)', transition: 'background 0.25s',
-                        color: 'transparent',
-                      }}
-                        onMouseEnter={e => { e.currentTarget.style.background='rgba(0,0,0,0.45)'; e.currentTarget.style.color='#fff' }}
-                        onMouseLeave={e => { e.currentTarget.style.background='rgba(0,0,0,0)'; e.currentTarget.style.color='transparent' }}
-                      >
-                        <FiZoomIn size={28} />
-                      </div>
-                    </>
+                    <img src={project.thumbnail} alt={project.title}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center', display: 'block' }}
+                      onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }}
+                    />
                   ) : null}
                   <div style={{ display: project.thumbnail ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', fontSize: 44 }}>
                     {project.image}
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Body */}
                 <div style={{ padding: '16px 16px 18px', display: 'flex', flexDirection: 'column', flex: 1 }}>
