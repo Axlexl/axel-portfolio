@@ -11,29 +11,7 @@ export const personalInfo = {
   instagram: 'https://www.instagram.com/axeee0606',
   linkedin: '',
   quote: "Code is not just what I write, it's how I solve problems.",
-  stats: [
-    { value: '3+', label: 'Years Learning' },
-    { value: '15+', label: 'Projects Completed' },
-    { value: '10+', label: 'Technologies' },
-    { value: 'Always', label: 'Learning' },
-  ],
 }
-
-export const techStack = [
-  { name: 'Vite', icon: 'SiVite', color: '#646cff' },
-  { name: 'HTML', icon: 'SiHtml5', color: '#e34f26' },
-  { name: 'CSS', icon: 'SiCss3', color: '#1572b6' },
-  { name: 'JavaScript', icon: 'SiJavascript', color: '#f7df1e' },
-  { name: 'Node.js', icon: 'SiNodedotjs', color: '#3c873a' },
-  { name: 'MySQL', icon: 'SiMysql', color: '#4479a1' },
-  { name: 'C++', icon: 'SiCplusplus', color: '#00599c' },
-  { name: 'C#', icon: 'SiCsharp', color: '#9b4993' },
-  { name: 'Java', icon: 'SiJava', color: '#ea2d2e' },
-  { name: 'Kotlin', icon: 'SiKotlin', color: '#7f52ff' },
-  { name: 'React.js', icon: 'SiReact', color: '#61dafb' },
-  { name: 'React Native', icon: 'SiReact', color: '#61dafb' },
-  { name: 'Electron', icon: 'SiElectron', color: '#47848f' },
-]
 
 export const projects = [
   {
@@ -62,63 +40,15 @@ export const projects = [
   },
   {
     id: 3,
-    title: 'Boarding House Management System',
-    description: 'A system that manages tenants, rooms, payments, and utilities for boarding houses.',
-    image: '🏠',
-    tags: ['Vite', 'React.js', 'Node.js', 'MySQL'],
-    category: 'Web',
-    github: 'https://github.com/Axlexl',
-    featured: true,
-  },
-  {
-    id: 4,
-    title: 'Task Manager App',
-    description: 'A mobile task management app with user authentication and cloud sync.',
-    image: '📋',
-    tags: ['React Native Expo', 'Node.js', 'MySQL'],
-    category: 'Mobile',
-    github: 'https://github.com/Axlexl',
-    featured: true,
-  },
-  {
-    id: 5,
-    title: 'School Inventory System (Desktop)',
-    description: 'A desktop application for managing school assets and inventory records.',
-    image: '🏫',
+    title: 'WorkSystem',
+    description: 'WorkSystem helps clients build a house without paying the full cost at once. It manages daily worker payments, calculates weekly salaries, and tracks expenses for both labor and construction materials.',
+    image: '🏗️',
+    thumbnail: '/worksystem.jpg',
     tags: ['Electron', 'Node.js', 'MySQL'],
     category: 'Desktop',
-    github: 'https://github.com/Axlexl',
+    github: 'https://github.com/Axlexl/worksystem',
+    demo: 'https://youtu.be/5HqkFvvos-s',
     featured: true,
-  },
-  {
-    id: 6,
-    title: 'Personal Expense Tracker',
-    description: 'Track income, expenses, and generate reports with charts and insights.',
-    image: '💰',
-    tags: ['React.js', 'Node.js', 'MySQL'],
-    category: 'Web',
-    github: 'https://github.com/Axlexl',
-    featured: true,
-  },
-  {
-    id: 7,
-    title: 'Student Grade Calculator',
-    description: 'A utility app that computes final grades based on different grading systems.',
-    image: '📊',
-    tags: ['React.js', 'JavaScript'],
-    category: 'Web',
-    github: 'https://github.com/Axlexl',
-    featured: false,
-  },
-  {
-    id: 8,
-    title: 'E-Commerce Mobile App',
-    description: 'A full-featured shopping app with cart, checkout, and order tracking.',
-    image: '🛒',
-    tags: ['React Native Expo', 'Node.js', 'MySQL'],
-    category: 'Mobile',
-    github: 'https://github.com/Axlexl',
-    featured: false,
   },
 ]
 
@@ -127,11 +57,11 @@ export const skills = [
     category: 'Frontend',
     color: '#6c63ff',
     items: [
-      { name: 'React.js', level: 85 },
-      { name: 'HTML & CSS', level: 90 },
-      { name: 'JavaScript', level: 82 },
+      { name: 'React.js',     level: 85 },
+      { name: 'HTML & CSS',   level: 90 },
+      { name: 'JavaScript',   level: 82 },
       { name: 'Tailwind CSS', level: 80 },
-      { name: 'Vite', level: 78 },
+      { name: 'Vite',         level: 78 },
     ],
   },
   {
@@ -139,17 +69,17 @@ export const skills = [
     color: '#a78bfa',
     items: [
       { name: 'React Native Expo', level: 75 },
-      { name: 'Kotlin', level: 60 },
-      { name: 'Java (Android)', level: 65 },
+      { name: 'Kotlin',            level: 60 },
+      { name: 'Java (Android)',    level: 65 },
     ],
   },
   {
     category: 'Backend',
     color: '#34d399',
     items: [
-      { name: 'Node.js', level: 78 },
+      { name: 'Node.js',    level: 78 },
       { name: 'Express.js', level: 75 },
-      { name: 'MySQL', level: 80 },
+      { name: 'MySQL',      level: 80 },
     ],
   },
   {
@@ -157,8 +87,8 @@ export const skills = [
     color: '#f59e0b',
     items: [
       { name: 'Electron', level: 70 },
-      { name: 'C#', level: 65 },
-      { name: 'C++', level: 60 },
+      { name: 'C#',       level: 65 },
+      { name: 'C++',      level: 60 },
     ],
   },
 ]
@@ -169,16 +99,8 @@ export const experience = [
     role: 'Freelance Web Developer',
     company: 'Self-Employed',
     period: '2023 – Present',
-    description: 'Building custom web applications for small businesses and individuals. Developed boarding house and inventory management systems.',
-    tags: ['React.js', 'Node.js', 'MySQL'],
-  },
-  {
-    id: 2,
-    role: 'Mobile App Developer (Academic)',
-    company: 'University IT Projects',
-    period: '2022 – 2023',
-    description: 'Developed multiple mobile applications using React Native Expo as part of university coursework and group projects.',
-    tags: ['React Native', 'Firebase'],
+    description: 'Building custom web and desktop applications for clients. Developed EXPAND (headphone store), LAY Instruments (music store), and WorkSystem (construction management).',
+    tags: ['React.js', 'Next.js', 'Node.js', 'MySQL', 'Tailwind CSS', 'Electron'],
   },
 ]
 
