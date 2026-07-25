@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { FiUser, FiMapPin, FiMail, FiPhone } from 'react-icons/fi'
-import { FaGithub, FaFacebook } from 'react-icons/fa'
+import { FaGithub, FaFacebook, FaInstagram } from 'react-icons/fa'
 import { personalInfo } from '../data/portfolioData'
 
 const traits = ['Problem Solver','Fast Learner','Team Player','Detail Oriented','Creative Thinker','Self-Motivated']
@@ -111,6 +111,19 @@ export default function AboutMe({ darkMode }) {
               onMouseLeave={e=>{e.currentTarget.style.background=darkMode?'rgba(255,255,255,0.06)':'rgba(108,99,255,0.07)';e.currentTarget.style.color=muted;e.currentTarget.style.borderColor=darkMode?'rgba(255,255,255,0.08)':'rgba(108,99,255,0.12)'}}
             >
               <FaFacebook size={16}/> Facebook Profile
+            </a>
+
+            <a href={personalInfo.instagram} target="_blank" rel="noreferrer"
+              style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'center', gap:8,
+                padding:'11px 0', borderRadius:12, textDecoration:'none',
+                background: darkMode?'rgba(255,255,255,0.06)':'rgba(108,99,255,0.07)',
+                color:muted, fontSize:13, fontWeight:600,
+                border:`1px solid ${darkMode?'rgba(255,255,255,0.08)':'rgba(108,99,255,0.12)'}`,
+                transition:'all 0.2s' }}
+              onMouseEnter={e=>{e.currentTarget.style.background='linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)';e.currentTarget.style.color='#fff';e.currentTarget.style.borderColor='transparent'}}
+              onMouseLeave={e=>{e.currentTarget.style.background=darkMode?'rgba(255,255,255,0.06)':'rgba(108,99,255,0.07)';e.currentTarget.style.color=muted;e.currentTarget.style.borderColor=darkMode?'rgba(255,255,255,0.08)':'rgba(108,99,255,0.12)'}}
+            >
+              <FaInstagram size={16}/> Instagram Profile
             </a>
           </motion.div>
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { FaGithub, FaFacebook } from 'react-icons/fa'
+import { FaGithub, FaFacebook, FaInstagram } from 'react-icons/fa'
 import { FiArrowRight, FiDownload, FiCalendar, FiCode, FiCpu, FiZap } from 'react-icons/fi'
 import {
   SiVite, SiHtml5, SiCss, SiJavascript, SiNodedotjs, SiMysql,
@@ -183,6 +183,17 @@ export default function Hero({ darkMode }) {
                 onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.color=darkMode?'#94a3b8':'#64748b';e.currentTarget.style.borderColor=darkMode?'rgba(255,255,255,0.08)':'rgba(108,99,255,0.15)'}}
               >
                 <FaFacebook size={16}/> Facebook
+              </a>
+
+              <a href={personalInfo.instagram} target="_blank" rel="noreferrer"
+                style={{ display:'flex', alignItems:'center', gap:8, fontSize:13, fontWeight:600,
+                  textDecoration:'none', color: darkMode ? '#94a3b8' : '#64748b',
+                  padding:'8px 16px', borderRadius:10, border:`1px solid ${darkMode?'rgba(255,255,255,0.08)':'rgba(108,99,255,0.15)'}`,
+                  transition:'all 0.2s' }}
+                onMouseEnter={e=>{e.currentTarget.style.background='linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)';e.currentTarget.style.color='#fff';e.currentTarget.style.borderColor='transparent'}}
+                onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.color=darkMode?'#94a3b8':'#64748b';e.currentTarget.style.borderColor=darkMode?'rgba(255,255,255,0.08)':'rgba(108,99,255,0.15)'}}
+              >
+                <FaInstagram size={16}/> Instagram
               </a>
 
               <button

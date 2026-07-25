@@ -8,6 +8,7 @@ export const personalInfo = {
   github: 'https://github.com/Axlexl',
   messenger: 'https://www.messenger.com/e2ee/t/9923001771077896',
   facebook: 'https://www.facebook.com/axel.socobos',
+  instagram: 'https://www.instagram.com/axeee0606',
   linkedin: '',
   quote: "Code is not just what I write, it's how I solve problems.",
   stats: [
@@ -37,6 +38,18 @@ export const techStack = [
 export const projects = [
   {
     id: 1,
+    title: 'EXPAND',
+    description: 'EXPAND is an online store that sells high-quality, high-end headphones for music lovers, gamers, and professionals. We offer premium sound, stylish designs, and a simple shopping experience to help you find the perfect headphones.',
+    image: '🎧',
+    thumbnail: '/expand.jpg',
+    tags: ['React.js', 'Next.js', 'Tailwind CSS', 'MySQL'],
+    category: 'Web',
+    github: 'https://github.com/Axlexl/expand2',
+    demo: 'https://youtu.be/DvqNj-QTplc',
+    featured: true,
+  },
+  {
+    id: 2,
     title: 'Boarding House Management System',
     description: 'A system that manages tenants, rooms, payments, and utilities for boarding houses.',
     image: '🏠',
@@ -46,7 +59,7 @@ export const projects = [
     featured: true,
   },
   {
-    id: 2,
+    id: 3,
     title: 'Task Manager App',
     description: 'A mobile task management app with user authentication and cloud sync.',
     image: '📋',
@@ -56,7 +69,7 @@ export const projects = [
     featured: true,
   },
   {
-    id: 3,
+    id: 4,
     title: 'School Inventory System (Desktop)',
     description: 'A desktop application for managing school assets and inventory records.',
     image: '🏫',
@@ -66,7 +79,7 @@ export const projects = [
     featured: true,
   },
   {
-    id: 4,
+    id: 5,
     title: 'Personal Expense Tracker',
     description: 'Track income, expenses, and generate reports with charts and insights.',
     image: '💰',
@@ -76,7 +89,7 @@ export const projects = [
     featured: true,
   },
   {
-    id: 5,
+    id: 6,
     title: 'Student Grade Calculator',
     description: 'A utility app that computes final grades based on different grading systems.',
     image: '📊',
@@ -86,7 +99,7 @@ export const projects = [
     featured: false,
   },
   {
-    id: 6,
+    id: 7,
     title: 'E-Commerce Mobile App',
     description: 'A full-featured shopping app with cart, checkout, and order tracking.',
     image: '🛒',

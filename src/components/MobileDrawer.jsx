@@ -4,7 +4,7 @@ import {
   FiSun, FiMoon, FiDownload, FiX,
 } from 'react-icons/fi'
 import { MdWorkOutline } from 'react-icons/md'
-import { FaGithub, FaFacebook } from 'react-icons/fa'
+import { FaGithub, FaFacebook, FaInstagram } from 'react-icons/fa'
 import { personalInfo } from '../data/portfolioData'
 
 const navLinks = [
@@ -155,9 +155,10 @@ export default function MobileDrawer({ darkMode, setDarkMode, activeSection, dra
             </p>
             <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
               {[
-                { icon: FaGithub,   href: personalInfo.github,   label: 'GitHub',   hoverBg: 'linear-gradient(135deg,#6c63ff,#a78bfa)' },
-                { icon: FaFacebook, href: personalInfo.facebook,  label: 'Facebook', hoverBg: 'linear-gradient(135deg,#1877f2,#42a5f5)' },
-                { icon: FiMail,     href: `mailto:${personalInfo.email}`, label: 'Email', hoverBg: 'linear-gradient(135deg,#6c63ff,#a78bfa)' },
+                { icon: FaGithub,    href: personalInfo.github,    label: 'GitHub',    hoverBg: 'linear-gradient(135deg,#6c63ff,#a78bfa)' },
+                { icon: FaFacebook,  href: personalInfo.facebook,  label: 'Facebook',  hoverBg: 'linear-gradient(135deg,#1877f2,#42a5f5)' },
+                { icon: FaInstagram, href: personalInfo.instagram, label: 'Instagram', hoverBg: 'linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)' },
+                { icon: FiMail,      href: `mailto:${personalInfo.email}`, label: 'Email', hoverBg: 'linear-gradient(135deg,#6c63ff,#a78bfa)' },
               ].map(({ icon: Icon, href, label, hoverBg }) => (
                 <a
                   key={label}
