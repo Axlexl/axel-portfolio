@@ -353,6 +353,7 @@ export default function Projects({ darkMode }) {
   const [showAll, setShowAll] = useState(false)
   const [demoProject, setDemoProject] = useState(null)
   const [lockProject, setLockProject] = useState(null)
+  const [expandedId, setExpandedId]   = useState(null)  // which card is expanded
 
   const filtered  = filter === 'All' ? projects : projects.filter(p => p.category === filter)
   const displayed = showAll ? filtered : filtered.slice(0, 4)
@@ -420,23 +421,29 @@ export default function Projects({ darkMode }) {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ delay: i * 0.10, duration: 0.4 }}
-                whileHover={{ y: -8 }}
+                /* Desktop hover */
+                onHoverStart={() => project.thumbnail && setExpandedId(project.id)}
+                onHoverEnd={() => setExpandedId(id => id === project.id ? null : id)}
+                /* Mobile tap — toggle */
+                onTap={() => {
+                  if (!project.thumbnail) return
+                  setExpandedId(prev => prev === project.id ? null : project.id)
+                }}
                 className={`glow-card${!darkMode ? ' glow-light' : ''}`}
                 style={{
                   borderRadius: 20,
-                  /* NO overflow:hidden here — it clips the glow ::before/::after */
                   display: 'flex', flexDirection: 'column',
                   background: cardBg, border: `1px solid ${cardBdr}`,
                   boxShadow: darkMode ? '0 4px 20px rgba(0,0,0,0.4)' : '0 4px 20px rgba(108,99,255,0.08)',
+                  cursor: 'pointer',
                 }}
               >
                 {/* Inner wrapper clips the content (image etc) without affecting glow */}
                 <div style={{ borderRadius: 20, overflow: 'hidden', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                {/* Banner — expands on hover to show more of the screenshot */}
+                {/* Banner — expands when active (hover/tap) */}
                 <motion.div
-                  initial={{ height: 96 }}
-                  whileHover={project.thumbnail ? { height: 200 } : { height: 96 }}
-                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  animate={{ height: expandedId === project.id && project.thumbnail ? 220 : 96 }}
+                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                   style={{
                     display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
                     fontSize: 44, flexShrink: 0, overflow: 'hidden',
