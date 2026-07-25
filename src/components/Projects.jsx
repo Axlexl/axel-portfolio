@@ -361,11 +361,15 @@ export default function Projects({ darkMode }) {
                 whileHover={{ y: -8 }}
                 className={`glow-card${!darkMode ? ' glow-light' : ''}`}
                 style={{
-                  borderRadius: 20, overflow: 'hidden', display: 'flex', flexDirection: 'column',
+                  borderRadius: 20,
+                  /* NO overflow:hidden here — it clips the glow ::before/::after */
+                  display: 'flex', flexDirection: 'column',
                   background: cardBg, border: `1px solid ${cardBdr}`,
                   boxShadow: darkMode ? '0 4px 20px rgba(0,0,0,0.4)' : '0 4px 20px rgba(108,99,255,0.08)',
                 }}
               >
+                {/* Inner wrapper clips the content (image etc) without affecting glow */}
+                <div style={{ borderRadius: 20, overflow: 'hidden', display: 'flex', flexDirection: 'column', flex: 1 }}>
                 {/* Banner */}
                 <div style={{
                   height: 96, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -442,6 +446,7 @@ export default function Projects({ darkMode }) {
                     </div>
                   </div>
                 </div>
+                </div>{/* end inner overflow wrapper */}
               </motion.div>
             ))}
           </AnimatePresence>

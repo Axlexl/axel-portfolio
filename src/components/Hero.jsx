@@ -36,14 +36,14 @@ const stats = [
   { value: 'Always', label: 'Learning',           icon: FiZap      },
 ]
 
-// stagger children helper
+// stagger children — each item waits 120ms after previous
 const container = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
+  show: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } },
 }
 const item = {
-  hidden: { opacity: 0, y: 24 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } },
+  hidden: { opacity: 0, y: 28 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
 }
 
 export default function Hero({ darkMode }) {
