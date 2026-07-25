@@ -50,6 +50,18 @@ export const projects = [
   },
   {
     id: 2,
+    title: 'LAY Instruments',
+    description: 'LAY Instrument is an online store that offers high-quality musical instruments for beginners and professionals. We provide reliable products at great value to help you enjoy playing and creating music.',
+    image: '🎸',
+    thumbnail: '/lay.jpg',
+    tags: ['HTML', 'CSS', 'JavaScript'],
+    category: 'Web',
+    github: 'https://github.com/Axlexl/LAY-INSTRUMENTS',
+    demo: 'https://youtu.be/2eVTKFG5csY',
+    featured: true,
+  },
+  {
+    id: 3,
     title: 'Boarding House Management System',
     description: 'A system that manages tenants, rooms, payments, and utilities for boarding houses.',
     image: '🏠',
@@ -59,7 +71,7 @@ export const projects = [
     featured: true,
   },
   {
-    id: 3,
+    id: 4,
     title: 'Task Manager App',
     description: 'A mobile task management app with user authentication and cloud sync.',
     image: '📋',
@@ -69,7 +81,7 @@ export const projects = [
     featured: true,
   },
   {
-    id: 4,
+    id: 5,
     title: 'School Inventory System (Desktop)',
     description: 'A desktop application for managing school assets and inventory records.',
     image: '🏫',
@@ -79,7 +91,7 @@ export const projects = [
     featured: true,
   },
   {
-    id: 5,
+    id: 6,
     title: 'Personal Expense Tracker',
     description: 'Track income, expenses, and generate reports with charts and insights.',
     image: '💰',
@@ -89,7 +101,7 @@ export const projects = [
     featured: true,
   },
   {
-    id: 6,
+    id: 7,
     title: 'Student Grade Calculator',
     description: 'A utility app that computes final grades based on different grading systems.',
     image: '📊',
@@ -99,7 +111,7 @@ export const projects = [
     featured: false,
   },
   {
-    id: 7,
+    id: 8,
     title: 'E-Commerce Mobile App',
     description: 'A full-featured shopping app with cart, checkout, and order tracking.',
     image: '🛒',
