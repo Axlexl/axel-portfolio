@@ -21,10 +21,8 @@ function App() {
   const [drawerOpen,   setDrawerOpen]   = useState(false)
   const [scrolled,     setScrolled]     = useState(false)
 
-  /* Called by LoadingScreen when it finishes */
   const handleLoadComplete = useCallback(() => {
     setLoading(false)
-    // slight delay so the exit animation of the loader clears first
     setTimeout(() => setShowContent(true), 100)
   }, [])
 
@@ -78,9 +76,9 @@ function App() {
         {showContent && (
           <motion.div
             key="main"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
             style={{
               minHeight: '100vh',
               backgroundColor: darkMode ? '#020818' : '#f0f0ff',
@@ -90,8 +88,16 @@ function App() {
               overflow: 'hidden',
             }}
           >
-            {/* ── Star field (dark mode only) ── */}
-            {darkMode && <StarField />}
+            {/* ── Star field — delayed so it doesn't lag the transition ── */}
+            {darkMode && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8, duration: 1.2 }}
+              >
+                <StarField />
+              </motion.div>
+            )}
 
             {/* ── Site-wide ambient glows (dark mode only) ── */}
             {darkMode && (

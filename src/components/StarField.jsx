@@ -6,125 +6,102 @@ export default memo(function StarField() {
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d', { alpha: true })
 
-    // ── Device pixel ratio for crisp HiDPI / 4K rendering ──
-    const DPR = Math.min(window.devicePixelRatio || 1, 3)
+    // Cap DPR at 1.5 for performance — still looks sharp
+    const DPR = Math.min(window.devicePixelRatio || 1, 1.5)
 
     let W, H, animId, t = 0
     let dust = [], stars = [], bright = [], nebulas = [], shoots = []
-    let shootCooldown = 0   // start immediately
-    // ── Sparkles: diamond burst particles that pop in randomly ──
-    let sparkles = []
-    let sparkleCooldown = 0
-
-    // Pre-fill 6 shooting stars at startup
-    function initShoots() {
-      for (let i = 0; i < 6; i++) {
-        setTimeout(() => spawnShoot(), i * 280)
-      }
-    }
+    let shootCooldown = 60
+    let sparkles = [], sparkleCooldown = 0
+    let lastTime = 0
+    const TARGET_FPS = 45
+    const FRAME_MS   = 1000 / TARGET_FPS
 
     function resize() {
       W = window.innerWidth
       H = Math.max(document.documentElement.scrollHeight, window.innerHeight)
-
-      // Physical pixels = CSS pixels × DPR
-      canvas.width  = W * DPR
-      canvas.height = H * DPR
+      canvas.width        = Math.round(W * DPR)
+      canvas.height       = Math.round(H * DPR)
       canvas.style.width  = W + 'px'
       canvas.style.height = H + 'px'
-
-      // Scale all drawing operations up
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0)
-
       buildScene()
     }
 
     function buildScene() {
-      // ── 1800 dust particles ──
-      dust = Array.from({ length: 1800 }, () => ({
-        x:  Math.random() * W,
-        y:  Math.random() * H,
-        r:  Math.random() * 0.65 + 0.15,
-        a:  Math.random() * 0.45 + 0.08,
-        vx: (Math.random() - 0.5) * 0.018,
-        vy: (Math.random() - 0.5) * 0.010,
-        tw: Math.random() < 0.45 ? Math.random() * 0.045 + 0.008 : 0,
+      // Reduced counts for smooth performance
+      dust = Array.from({ length: 600 }, () => ({
+        x: Math.random() * W, y: Math.random() * H,
+        r: Math.random() * 0.6 + 0.15,
+        a: Math.random() * 0.4 + 0.07,
+        vx: (Math.random() - 0.5) * 0.014,
+        vy: (Math.random() - 0.5) * 0.008,
+        tw: Math.random() < 0.35 ? Math.random() * 0.04 + 0.008 : 0,
         ph: Math.random() * Math.PI * 2,
         hue: 255 + Math.random() * 75,
       }))
 
-      // ── 280 mid stars ──
-      stars = Array.from({ length: 280 }, () => ({
-        x:  Math.random() * W,
-        y:  Math.random() * H,
-        r:  Math.random() * 1.8 + 0.8,
-        a:  Math.random() * 0.65 + 0.25,
-        vx: (Math.random() - 0.5) * 0.013,
-        vy: (Math.random() - 0.5) * 0.007,
-        tw: Math.random() * 0.055 + 0.012,
+      stars = Array.from({ length: 120 }, () => ({
+        x: Math.random() * W, y: Math.random() * H,
+        r: Math.random() * 1.6 + 0.7,
+        a: Math.random() * 0.6 + 0.2,
+        vx: (Math.random() - 0.5) * 0.01,
+        vy: (Math.random() - 0.5) * 0.006,
+        tw: Math.random() * 0.05 + 0.01,
         ph: Math.random() * Math.PI * 2,
         hue: 248 + Math.random() * 95,
         sat: 45 + Math.random() * 50,
       }))
 
-      // ── 32 bright cross stars ──
-      bright = Array.from({ length: 32 }, () => ({
-        x:   Math.random() * W,
-        y:   Math.random() * H,
-        r:   Math.random() * 2.8 + 2.0,
-        a:   Math.random() * 0.45 + 0.5,
-        vx:  (Math.random() - 0.5) * 0.009,
-        vy:  (Math.random() - 0.5) * 0.005,
-        tw:  Math.random() * 0.06 + 0.016,
-        ph:  Math.random() * Math.PI * 2,
-        hue: 258 + Math.random() * 75,
-        spike: Math.random() * 26 + 16,
-        rot:   Math.random() * Math.PI / 4,
-        rotV:  (Math.random() - 0.5) * 0.0018,
+      bright = Array.from({ length: 14 }, () => ({
+        x: Math.random() * W, y: Math.random() * H,
+        r: Math.random() * 2.2 + 1.8,
+        a: Math.random() * 0.45 + 0.5,
+        vx: (Math.random() - 0.5) * 0.007,
+        vy: (Math.random() - 0.5) * 0.004,
+        tw: Math.random() * 0.055 + 0.012,
+        ph: Math.random() * Math.PI * 2,
+        hue: 260 + Math.random() * 70,
+        spike: Math.random() * 20 + 12,
+        rot: Math.random() * Math.PI / 4,
+        rotV: (Math.random() - 0.5) * 0.0015,
       }))
 
-      // ── 10 nebula blobs ──
-      nebulas = Array.from({ length: 10 }, (_, i) => ({
-        x:  Math.random() * W,
-        y:  Math.random() * H,
-        rx: 280 + Math.random() * 380,
-        hue: [272,295,262,308,278,318,268,298,258,285][i],
-        a:  0.055 + Math.random() * 0.085,
-        vx: (Math.random() - 0.5) * 0.035,
-        vy: (Math.random() - 0.5) * 0.022,
-        rot:  Math.random() * Math.PI * 2,
-        rotV: (Math.random() - 0.5) * 0.00025,
-        ph:   Math.random() * Math.PI * 2,
-        phV:  0.0025 + Math.random() * 0.004,
+      nebulas = Array.from({ length: 6 }, (_, i) => ({
+        x: Math.random() * W, y: Math.random() * H,
+        rx: 220 + Math.random() * 300,
+        hue: [272, 290, 262, 298, 278, 310][i],
+        a: 0.05 + Math.random() * 0.07,
+        vx: (Math.random() - 0.5) * 0.025,
+        vy: (Math.random() - 0.5) * 0.015,
+        rot: Math.random() * Math.PI * 2,
+        rotV: (Math.random() - 0.5) * 0.0002,
+        ph: Math.random() * Math.PI * 2,
+        phV: 0.002 + Math.random() * 0.003,
       }))
     }
 
-    function wrap(o, pad = 400) {
+    function wrap(o, pad = 350) {
       if (o.x < -pad) o.x = W + pad
       if (o.x > W + pad) o.x = -pad
       if (o.y < -pad) o.y = H + pad
       if (o.y > H + pad) o.y = -pad
     }
 
-    // ── High-quality nebula (6-stop gradient, elliptical) ──
     function drawNebula(n) {
       ctx.save()
-      const p = 1 + 0.055 * Math.sin(n.ph)
+      const p = 1 + 0.05 * Math.sin(n.ph)
       ctx.translate(n.x, n.y)
       ctx.rotate(n.rot)
-      ctx.scale(p, p * 0.48)
-
+      ctx.scale(p, p * 0.45)
       const g = ctx.createRadialGradient(0, 0, 0, 0, 0, n.rx)
-      const a = n.a * (0.78 + 0.22 * Math.sin(n.ph))
-      g.addColorStop(0,    `hsla(${n.hue},    92%, 72%, ${a})`)
-      g.addColorStop(0.15, `hsla(${n.hue+8},  88%, 65%, ${a*0.82})`)
-      g.addColorStop(0.35, `hsla(${n.hue+15}, 80%, 55%, ${a*0.58})`)
-      g.addColorStop(0.55, `hsla(${n.hue-5},  72%, 42%, ${a*0.32})`)
-      g.addColorStop(0.78, `hsla(${n.hue-12}, 62%, 30%, ${a*0.12})`)
+      const a = n.a * (0.8 + 0.2 * Math.sin(n.ph))
+      g.addColorStop(0,    `hsla(${n.hue},88%,68%,${a})`)
+      g.addColorStop(0.35, `hsla(${n.hue+10},78%,52%,${a*0.55})`)
+      g.addColorStop(0.7,  `hsla(${n.hue-5},65%,38%,${a*0.2})`)
       g.addColorStop(1,    'transparent')
-
       ctx.beginPath()
       ctx.arc(0, 0, n.rx, 0, Math.PI * 2)
       ctx.fillStyle = g
@@ -132,303 +109,195 @@ export default memo(function StarField() {
       ctx.restore()
     }
 
-    // ── 8-spoke cross with smooth gradient spikes ──
     function drawSpike(x, y, len, a, hue, rot) {
       const spokes = [
-        { angle: 0,         l: len,        w: 0.9 },
-        { angle: Math.PI/2, l: len,        w: 0.9 },
-        { angle: Math.PI,   l: len,        w: 0.9 },
-        { angle: Math.PI*3/2, l: len,      w: 0.9 },
-        { angle: Math.PI/4, l: len * 0.48, w: 0.5 },
-        { angle: Math.PI*3/4, l: len*0.48, w: 0.5 },
-        { angle: Math.PI*5/4, l: len*0.48, w: 0.5 },
-        { angle: Math.PI*7/4, l: len*0.48, w: 0.5 },
+        [0, len, 0.8], [Math.PI/2, len, 0.8], [Math.PI, len, 0.8], [Math.PI*3/2, len, 0.8],
+        [Math.PI/4, len*0.42, 0.45], [Math.PI*3/4, len*0.42, 0.45],
+        [Math.PI*5/4, len*0.42, 0.45], [Math.PI*7/4, len*0.42, 0.45],
       ]
-      spokes.forEach(({ angle, l, w }) => {
+      spokes.forEach(([angle, l, w]) => {
         const ex = x + Math.cos(angle + rot) * l
         const ey = y + Math.sin(angle + rot) * l
         const g = ctx.createLinearGradient(x, y, ex, ey)
-        g.addColorStop(0,    `hsla(${hue},90%,96%,${a})`)
-        g.addColorStop(0.12, `hsla(${hue},85%,88%,${a*0.85})`)
-        g.addColorStop(0.45, `hsla(${hue},78%,75%,${a*0.45})`)
+        g.addColorStop(0,    `hsla(${hue},90%,95%,${a})`)
+        g.addColorStop(0.4,  `hsla(${hue},80%,80%,${a*0.45})`)
         g.addColorStop(1,    'transparent')
-        ctx.beginPath()
-        ctx.moveTo(x, y)
-        ctx.lineTo(ex, ey)
-        ctx.strokeStyle = g
-        ctx.lineWidth = w
-        ctx.stroke()
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(ex, ey)
+        ctx.strokeStyle = g; ctx.lineWidth = w; ctx.stroke()
       })
     }
 
-    // ── Shooting star spawn ──
     function spawnShoot() {
-      const fromTop = Math.random() < 0.6
       shoots.push({
-        x:     fromTop ? Math.random() * W : (Math.random() < 0.5 ? -10 : W + 10),
-        y:     fromTop ? Math.random() * H * 0.3 : Math.random() * H * 0.6,
-        len:   120 + Math.random() * 200,
-        speed: 10 + Math.random() * 9,
-        angle: (fromTop ? 0.18 : (Math.random() < 0.5 ? 0.1 : Math.PI - 0.1)) + (Math.random() - 0.5) * 0.35,
-        life: 0,
-        maxLife: 42 + Math.random() * 28,
-        hue: 265 + Math.random() * 65,
-        w: 1.4 + Math.random() * 1.4,
+        x: Math.random() * W * 0.85,
+        y: Math.random() * H * 0.5,
+        len: 100 + Math.random() * 160,
+        speed: 9 + Math.random() * 8,
+        angle: 0.2 + (Math.random() - 0.5) * 0.35,
+        life: 0, maxLife: 42 + Math.random() * 28,
+        hue: 265 + Math.random() * 65, w: 1.3 + Math.random() * 1.2,
       })
     }
 
-    // ── Spawn a sparkle burst ──
     function spawnSparkle() {
-      const x    = Math.random() * W
-      const y    = Math.random() * H
-      const hue  = 265 + Math.random() * 70
-      const size = Math.random() * 4.5 + 1.5   // bigger range
       sparkles.push({
-        x, y, hue, size,
-        life: 0,
-        maxLife: 50 + Math.random() * 50,
+        x: Math.random() * W, y: Math.random() * H,
+        hue: 265 + Math.random() * 70,
+        size: Math.random() * 4 + 1.5,
+        life: 0, maxLife: 48 + Math.random() * 40,
         rot: Math.random() * Math.PI / 4,
-        rotV: (Math.random() - 0.5) * 0.05,
+        rotV: (Math.random() - 0.5) * 0.045,
       })
     }
 
-    // ── Draw a single sparkle ──
     function drawSparkle(sp) {
       const p  = sp.life / sp.maxLife
-      // ease: quick rise, slow fade
-      const a  = p < 0.25 ? p / 0.25 : 1 - (p - 0.25) / 0.75
+      const a  = p < 0.25 ? p / 0.25 : Math.max(0, 1 - (p - 0.25) / 0.75)
       const sz = sp.size * (0.7 + 0.3 * Math.sin(p * Math.PI))
 
-      // outer soft glow
-      const grd = ctx.createRadialGradient(sp.x, sp.y, 0, sp.x, sp.y, sz * 9)
-      grd.addColorStop(0,    `hsla(${sp.hue},90%,90%,${a * 0.55})`)
-      grd.addColorStop(0.3,  `hsla(${sp.hue},80%,75%,${a * 0.28})`)
-      grd.addColorStop(0.65, `hsla(${sp.hue},70%,60%,${a * 0.10})`)
-      grd.addColorStop(1,    'transparent')
-      ctx.beginPath()
-      ctx.arc(sp.x, sp.y, sz * 9, 0, Math.PI * 2)
-      ctx.fillStyle = grd
-      ctx.fill()
+      const grd = ctx.createRadialGradient(sp.x, sp.y, 0, sp.x, sp.y, sz * 8)
+      grd.addColorStop(0,   `hsla(${sp.hue},90%,88%,${a*0.5})`)
+      grd.addColorStop(0.4, `hsla(${sp.hue},80%,72%,${a*0.22})`)
+      grd.addColorStop(1,   'transparent')
+      ctx.beginPath(); ctx.arc(sp.x, sp.y, sz * 8, 0, Math.PI * 2)
+      ctx.fillStyle = grd; ctx.fill()
 
-      // 4-spike diamond (long vertical + short horizontal, rotated)
-      const spikes = [
-        { angle: sp.rot,                    len: sz * 11, w: 0.9 },  // up
-        { angle: sp.rot + Math.PI,          len: sz * 11, w: 0.9 },  // down
-        { angle: sp.rot + Math.PI / 2,      len: sz * 5,  w: 0.6 },  // right
-        { angle: sp.rot - Math.PI / 2,      len: sz * 5,  w: 0.6 },  // left
-        { angle: sp.rot + Math.PI / 4,      len: sz * 3.5,w: 0.4 },  // diagonals
-        { angle: sp.rot + Math.PI * 3 / 4,  len: sz * 3.5,w: 0.4 },
-        { angle: sp.rot - Math.PI / 4,      len: sz * 3.5,w: 0.4 },
-        { angle: sp.rot - Math.PI * 3 / 4,  len: sz * 3.5,w: 0.4 },
+      const spokes2 = [
+        [sp.rot, sz*10, 0.8], [sp.rot+Math.PI, sz*10, 0.8],
+        [sp.rot+Math.PI/2, sz*4.5, 0.55], [sp.rot-Math.PI/2, sz*4.5, 0.55],
+        [sp.rot+Math.PI/4, sz*3, 0.35], [sp.rot+Math.PI*3/4, sz*3, 0.35],
+        [sp.rot-Math.PI/4, sz*3, 0.35], [sp.rot-Math.PI*3/4, sz*3, 0.35],
       ]
-
-      spikes.forEach(({ angle, len, w }) => {
-        const ex = sp.x + Math.cos(angle) * len
-        const ey = sp.y + Math.sin(angle) * len
+      spokes2.forEach(([angle, l, w]) => {
+        const ex = sp.x + Math.cos(angle) * l
+        const ey = sp.y + Math.sin(angle) * l
         const sg = ctx.createLinearGradient(sp.x, sp.y, ex, ey)
-        sg.addColorStop(0,    `hsla(${sp.hue},95%,98%,${a})`)
-        sg.addColorStop(0.2,  `hsla(${sp.hue},88%,88%,${a * 0.8})`)
-        sg.addColorStop(0.55, `hsla(${sp.hue},78%,72%,${a * 0.4})`)
-        sg.addColorStop(1,    'transparent')
-        ctx.save()
-        ctx.strokeStyle = sg
-        ctx.lineWidth = w
-        ctx.shadowColor = `hsl(${sp.hue},90%,82%)`
-        ctx.shadowBlur = 6
-        ctx.beginPath()
-        ctx.moveTo(sp.x, sp.y)
-        ctx.lineTo(ex, ey)
-        ctx.stroke()
-        ctx.restore()
+        sg.addColorStop(0,   `hsla(${sp.hue},95%,97%,${a})`)
+        sg.addColorStop(0.45,`hsla(${sp.hue},82%,78%,${a*0.4})`)
+        sg.addColorStop(1,   'transparent')
+        ctx.beginPath(); ctx.moveTo(sp.x, sp.y); ctx.lineTo(ex, ey)
+        ctx.strokeStyle = sg; ctx.lineWidth = w; ctx.stroke()
       })
 
-      // bright white core dot
-      const cg = ctx.createRadialGradient(sp.x, sp.y, 0, sp.x, sp.y, sz * 2)
-      cg.addColorStop(0,   `rgba(255,255,255,${a})`)
-      cg.addColorStop(0.4, `hsla(${sp.hue},90%,92%,${a * 0.7})`)
-      cg.addColorStop(1,   'transparent')
-      ctx.beginPath()
-      ctx.arc(sp.x, sp.y, sz * 2, 0, Math.PI * 2)
-      ctx.fillStyle = cg
-      ctx.fill()
+      const cg = ctx.createRadialGradient(sp.x, sp.y, 0, sp.x, sp.y, sz*1.8)
+      cg.addColorStop(0, `rgba(255,255,255,${a})`); cg.addColorStop(1, 'transparent')
+      ctx.beginPath(); ctx.arc(sp.x, sp.y, sz*1.8, 0, Math.PI*2)
+      ctx.fillStyle = cg; ctx.fill()
     }
 
-    // ── Galaxy core ──
     function drawCore() {
-      const cx = W * 0.5
-      const cy = H * 0.35 + Math.sin(t * 0.028) * 18
-      const pulse = 1 + 0.055 * Math.sin(t * 0.45)
-
-      ;[
-        [580 * pulse, 0.032, 0.022],
-        [240 * pulse, 0.085, 0.055],
-        [ 90 * pulse, 0.18,  0.12 ],
-        [ 28 * pulse, 0.40,  0.28 ],
-      ].forEach(([r, a1, a2]) => {
+      const cx = W * 0.5, cy = H * 0.35 + Math.sin(t * 0.028) * 16
+      const pulse = 1 + 0.05 * Math.sin(t * 0.45)
+      ;[[480*pulse,0.028,0.018],[200*pulse,0.075,0.048],[75*pulse,0.16,0.10]].forEach(([r,a1,a2]) => {
         const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
-        g.addColorStop(0,   `rgba(235,185,255,${a1})`)
-        g.addColorStop(0.35,`rgba(190,110,255,${a2})`)
-        g.addColorStop(0.7, `rgba(140, 60,220,${a2*0.35})`)
+        g.addColorStop(0,   `rgba(230,178,255,${a1})`)
+        g.addColorStop(0.4, `rgba(185,100,255,${a2})`)
         g.addColorStop(1,   'transparent')
-        ctx.beginPath()
-        ctx.arc(cx, cy, r, 0, Math.PI * 2)
-        ctx.fillStyle = g
-        ctx.fill()
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2)
+        ctx.fillStyle = g; ctx.fill()
       })
     }
 
-    // ── Main render loop ──
-    function draw() {
-      ctx.clearRect(0, 0, W, H)
+    function draw(now) {
+      animId = requestAnimationFrame(draw)
+
+      // Throttle to TARGET_FPS
+      const delta = now - lastTime
+      if (delta < FRAME_MS) return
+      lastTime = now - (delta % FRAME_MS)
       t += 0.016
 
-      // 1 — nebulas
+      ctx.clearRect(0, 0, W, H)
+
+      // Nebulas
       nebulas.forEach(n => {
-        n.x += n.vx; n.y += n.vy
-        n.rot += n.rotV; n.ph += n.phV
-        wrap(n, 500)
-        drawNebula(n)
+        n.x += n.vx; n.y += n.vy; n.rot += n.rotV; n.ph += n.phV
+        wrap(n, 500); drawNebula(n)
       })
 
-      // 2 — galaxy core
       drawCore()
 
-      // 3 — dust
+      // Dust
       dust.forEach(s => {
         s.x += s.vx; s.y += s.vy; s.ph += s.tw
         wrap(s, 10)
         const a = s.tw ? s.a * (0.35 + 0.65 * Math.abs(Math.sin(s.ph))) : s.a
-        ctx.save()
-        ctx.globalAlpha = a
+        ctx.save(); ctx.globalAlpha = a
         ctx.fillStyle = `hsl(${s.hue},38%,90%)`
-        ctx.beginPath()
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
-        ctx.fill()
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill()
         ctx.restore()
       })
 
-      // 4 — mid stars
+      // Mid stars
       stars.forEach(s => {
         s.x += s.vx; s.y += s.vy; s.ph += s.tw
         wrap(s, 10)
         const a = s.a * (0.42 + 0.58 * Math.abs(Math.sin(s.ph)))
-        const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 4)
-        g.addColorStop(0,   '#ffffff')
-        g.addColorStop(0.25,`hsl(${s.hue},${s.sat}%,88%)`)
-        g.addColorStop(0.6, `hsl(${s.hue},${s.sat}%,70%)`)
-        g.addColorStop(1,   'transparent')
-        ctx.save()
-        ctx.globalAlpha = a
-        ctx.beginPath()
-        ctx.arc(s.x, s.y, s.r * 4, 0, Math.PI * 2)
-        ctx.fillStyle = g
-        ctx.fill()
+        const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r*3.5)
+        g.addColorStop(0, '#fff'); g.addColorStop(0.3, `hsl(${s.hue},${s.sat}%,85%)`); g.addColorStop(1, 'transparent')
+        ctx.save(); ctx.globalAlpha = a
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r*3.5, 0, Math.PI*2); ctx.fillStyle = g; ctx.fill()
         ctx.restore()
       })
 
-      // 5 — bright stars
+      // Bright cross stars
       bright.forEach(s => {
-        s.x += s.vx; s.y += s.vy
-        s.ph += s.tw; s.rot += s.rotV
+        s.x += s.vx; s.y += s.vy; s.ph += s.tw; s.rot += s.rotV
         wrap(s, 10)
         const a = s.a * (0.55 + 0.45 * Math.abs(Math.sin(s.ph)))
         const spike = s.spike * (0.82 + 0.18 * Math.abs(Math.sin(s.ph)))
-
-        // wide outer bloom
-        const bloom = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 13)
-        bloom.addColorStop(0,   `hsla(${s.hue},85%,90%,${a*0.5})`)
-        bloom.addColorStop(0.35,`hsla(${s.hue},75%,72%,${a*0.22})`)
-        bloom.addColorStop(0.7, `hsla(${s.hue},65%,55%,${a*0.07})`)
-        bloom.addColorStop(1,   'transparent')
-        ctx.beginPath()
-        ctx.arc(s.x, s.y, s.r * 13, 0, Math.PI * 2)
-        ctx.fillStyle = bloom
-        ctx.fill()
-
-        drawSpike(s.x, s.y, spike, a * 0.75, s.hue, s.rot)
-
-        // crisp core
-        const core = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 2.5)
-        core.addColorStop(0,   '#ffffff')
-        core.addColorStop(0.35,`hsl(${s.hue},72%,92%)`)
-        core.addColorStop(1,   'transparent')
-        ctx.save()
-        ctx.globalAlpha = a
-        ctx.beginPath()
-        ctx.arc(s.x, s.y, s.r * 2.5, 0, Math.PI * 2)
-        ctx.fillStyle = core
-        ctx.fill()
+        const bloom = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r*11)
+        bloom.addColorStop(0, `hsla(${s.hue},82%,88%,${a*0.45})`)
+        bloom.addColorStop(0.5, `hsla(${s.hue},70%,68%,${a*0.15})`); bloom.addColorStop(1, 'transparent')
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r*11, 0, Math.PI*2); ctx.fillStyle = bloom; ctx.fill()
+        drawSpike(s.x, s.y, spike, a*0.7, s.hue, s.rot)
+        const core = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r*2.2)
+        core.addColorStop(0, '#fff'); core.addColorStop(0.4, `hsl(${s.hue},72%,90%)`); core.addColorStop(1, 'transparent')
+        ctx.save(); ctx.globalAlpha = a
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r*2.2, 0, Math.PI*2); ctx.fillStyle = core; ctx.fill()
         ctx.restore()
       })
 
-      // 6 — sparkles (diamond bursts) — high density
+      // Sparkles
       sparkleCooldown--
       if (sparkleCooldown <= 0) {
-        const count = 2 + Math.floor(Math.random() * 4) // 2–5 at once
-        for (let s = 0; s < count; s++) spawnSparkle()
-        sparkleCooldown = 8 + Math.floor(Math.random() * 14) // very frequent
+        const count = 1 + Math.floor(Math.random() * 3)
+        for (let i = 0; i < count; i++) spawnSparkle()
+        sparkleCooldown = 12 + Math.floor(Math.random() * 20)
       }
       for (let i = sparkles.length - 1; i >= 0; i--) {
-        const sp = sparkles[i]
-        sp.life++
-        sp.rot += sp.rotV
-        drawSparkle(sp)
-        if (sp.life >= sp.maxLife) sparkles.splice(i, 1)
+        sparkles[i].life++; sparkles[i].rot += sparkles[i].rotV
+        drawSparkle(sparkles[i])
+        if (sparkles[i].life >= sparkles[i].maxLife) sparkles.splice(i, 1)
       }
 
-      // 7 — shooting stars — always keep 6 active
-      // Refill whenever below 6
+      // Shooting stars — keep 6 active
       while (shoots.length < 6) spawnShoot()
-
       for (let i = shoots.length - 1; i >= 0; i--) {
         const sh = shoots[i]
         sh.x += Math.cos(sh.angle) * sh.speed
         sh.y += Math.sin(sh.angle) * sh.speed
         sh.life++
-
-        const p  = sh.life / sh.maxLife
-        const a  = p < 0.18 ? p / 0.18 : Math.max(0, 1 - (p - 0.18) / 0.82)
+        const p = sh.life / sh.maxLife
+        const a = p < 0.18 ? p / 0.18 : Math.max(0, 1 - (p - 0.18) / 0.82)
         const tx = sh.x - Math.cos(sh.angle) * sh.len
         const ty = sh.y - Math.sin(sh.angle) * sh.len
-
-        // tail
         const tg = ctx.createLinearGradient(tx, ty, sh.x, sh.y)
-        tg.addColorStop(0,    'transparent')
-        tg.addColorStop(0.3,  `hsla(${sh.hue},65%,65%,${a*0.25})`)
-        tg.addColorStop(0.65, `hsla(${sh.hue},78%,80%,${a*0.6})`)
-        tg.addColorStop(1,    `hsla(${sh.hue},90%,96%,${a})`)
-
+        tg.addColorStop(0, 'transparent')
+        tg.addColorStop(0.45, `hsla(${sh.hue},68%,68%,${a*0.3})`)
+        tg.addColorStop(1,   `hsla(${sh.hue},88%,95%,${a})`)
         ctx.save()
-        ctx.strokeStyle = tg
-        ctx.lineWidth = sh.w
-        ctx.shadowColor = `hsl(${sh.hue},85%,78%)`
-        ctx.shadowBlur = 10
-        ctx.beginPath()
-        ctx.moveTo(tx, ty)
-        ctx.lineTo(sh.x, sh.y)
-        ctx.stroke()
-
-        // bright head
-        const hg = ctx.createRadialGradient(sh.x, sh.y, 0, sh.x, sh.y, 5)
-        hg.addColorStop(0,   `rgba(255,255,255,${a})`)
-        hg.addColorStop(0.4, `hsla(${sh.hue},90%,88%,${a*0.7})`)
-        hg.addColorStop(1,   'transparent')
-        ctx.beginPath()
-        ctx.arc(sh.x, sh.y, 5, 0, Math.PI * 2)
-        ctx.fillStyle = hg
-        ctx.fill()
+        ctx.strokeStyle = tg; ctx.lineWidth = sh.w
+        ctx.shadowColor = `hsl(${sh.hue},80%,75%)`; ctx.shadowBlur = 8
+        ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(sh.x, sh.y); ctx.stroke()
         ctx.restore()
-
         if (sh.life >= sh.maxLife) shoots.splice(i, 1)
       }
-
-      animId = requestAnimationFrame(draw)
     }
 
     resize()
     window.addEventListener('resize', resize)
-    draw()
-    initShoots()
+    animId = requestAnimationFrame(draw)
 
     return () => {
       cancelAnimationFrame(animId)
@@ -438,15 +307,13 @@ export default memo(function StarField() {
 
   return (
     <>
-      {/* Deep violet void — CSS base renders instantly, no FOUC */}
       <div style={{
         position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none',
         background: `
-          radial-gradient(ellipse 120% 60% at 50% 38%, rgba(100,25,170,0.60) 0%, transparent 68%),
-          radial-gradient(ellipse 75%  48% at 12% 68%, rgba(65,10,130,0.40)  0%, transparent 62%),
-          radial-gradient(ellipse 85%  52% at 88% 18%, rgba(120,35,185,0.35) 0%, transparent 65%),
-          radial-gradient(ellipse 55%  40% at 65% 80%, rgba(80,15,145,0.28)  0%, transparent 58%),
-          linear-gradient(168deg, #04011a 0%, #080220 28%, #06011c 55%, #030010 100%)
+          radial-gradient(ellipse 110% 55% at 50% 38%, rgba(95,22,160,0.55) 0%, transparent 68%),
+          radial-gradient(ellipse 70%  45% at 12% 68%, rgba(60,10,120,0.38) 0%, transparent 60%),
+          radial-gradient(ellipse 80%  50% at 88% 18%, rgba(115,30,175,0.32) 0%, transparent 65%),
+          linear-gradient(168deg, #04011a 0%, #08021f 28%, #05011a 55%, #02000c 100%)
         `,
       }} />
       <canvas

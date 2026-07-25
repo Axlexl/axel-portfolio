@@ -1,40 +1,158 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useScrollReveal } from '../hooks/useScrollReveal'
-import { FiBriefcase, FiGithub, FiArrowRight, FiPlay, FiX, FiExternalLink } from 'react-icons/fi'
+import { FiBriefcase, FiArrowRight, FiPlay, FiX, FiExternalLink, FiLock, FiMail } from 'react-icons/fi'
 import { projects } from '../data/portfolioData'
+import { personalInfo } from '../data/portfolioData'
 
 const categories = ['All', 'Web', 'Mobile', 'Desktop']
 
-/* ── Video Modal ── */
-function VideoModal({ project, onClose }) {
-  // Close on Escape key
+/* ── Code Lock Modal ── */
+function CodeLockModal({ project, onClose }) {
   useEffect(() => {
     const onKey = e => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', onKey)
     document.body.style.overflow = 'hidden'
-    return () => {
-      window.removeEventListener('keydown', onKey)
-      document.body.style.overflow = ''
-    }
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = '' }
   }, [onClose])
 
-  // Convert YouTube watch / shorts / youtu.be URL → embed URL
+  return (
+    <AnimatePresence>
+      <motion.div
+        key="lock-backdrop"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+        onClick={onClose}
+        style={{
+          position: 'fixed', inset: 0, zIndex: 9000,
+          background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20,
+        }}
+      >
+        <motion.div
+          key="lock-box"
+          initial={{ opacity: 0, scale: 0.85, y: 30 }}
+          animate={{ opacity: 1, scale: 1,    y: 0  }}
+          exit={{   opacity: 0, scale: 0.85, y: 30  }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          onClick={e => e.stopPropagation()}
+          style={{
+            width: '100%', maxWidth: 420, borderRadius: 20,
+            background: '#0d0820',
+            border: '1px solid rgba(108,99,255,0.35)',
+            boxShadow: '0 0 0 1px rgba(108,99,255,0.3), 0 30px 70px rgba(0,0,0,0.6), 0 0 50px rgba(108,99,255,0.12)',
+            overflow: 'hidden',
+          }}
+        >
+          {/* Header */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '14px 20px',
+            background: 'rgba(108,99,255,0.08)',
+            borderBottom: '1px solid rgba(108,99,255,0.15)',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: 10,
+                background: 'rgba(108,99,255,0.15)',
+                border: '1px solid rgba(108,99,255,0.3)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <FiLock size={17} style={{ color: '#a78bfa' }} />
+              </div>
+              <div>
+                <p style={{ fontWeight: 800, fontSize: 14, color: '#f1f5f9' }}>Source Code</p>
+                <p style={{ fontSize: 11, color: '#a78bfa', marginTop: 1 }}>{project.title}</p>
+              </div>
+            </div>
+            <button onClick={onClose} style={{
+              width: 32, height: 32, borderRadius: 8, border: 'none', cursor: 'pointer',
+              background: 'rgba(255,255,255,0.07)', color: '#94a3b8',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s',
+            }}
+              onMouseEnter={e => { e.currentTarget.style.background='rgba(239,68,68,0.3)'; e.currentTarget.style.color='#fff' }}
+              onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.07)'; e.currentTarget.style.color='#94a3b8' }}
+            >
+              <FiX size={15} />
+            </button>
+          </div>
+
+          {/* Body */}
+          <div style={{ padding: '28px 24px', textAlign: 'center' }}>
+            {/* Big lock icon */}
+            <motion.div
+              animate={{ scale: [1, 1.08, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              style={{
+                width: 72, height: 72, borderRadius: '50%', margin: '0 auto 20px',
+                background: 'linear-gradient(135deg,rgba(108,99,255,0.2),rgba(167,139,250,0.1))',
+                border: '2px solid rgba(108,99,255,0.35)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 0 30px rgba(108,99,255,0.2)',
+              }}
+            >
+              <FiLock size={30} style={{ color: '#a78bfa' }} />
+            </motion.div>
+
+            <p style={{ fontSize: 17, fontWeight: 800, color: '#f1f5f9', marginBottom: 10 }}>
+              This code is not free
+            </p>
+            <p style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.7, marginBottom: 24 }}>
+              The source code for <strong style={{ color: '#a78bfa' }}>{project.title}</strong> is private.
+              If you're interested in acquiring it or want to discuss a similar project,
+              feel free to contact me.
+            </p>
+
+            {/* Contact button */}
+            <a
+              href={`mailto:${personalInfo.email}?subject=Inquiry about ${project.title} source code`}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                padding: '12px 24px', borderRadius: 12, textDecoration: 'none',
+                background: 'linear-gradient(135deg,#6c63ff,#a78bfa)',
+                color: '#fff', fontWeight: 700, fontSize: 14,
+                boxShadow: '0 4px 20px rgba(108,99,255,0.4)',
+                transition: 'opacity 0.2s, transform 0.2s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.opacity='0.85'; e.currentTarget.style.transform='translateY(-2px)' }}
+              onMouseLeave={e => { e.currentTarget.style.opacity='1'; e.currentTarget.style.transform='translateY(0)' }}
+            >
+              <FiMail size={15} /> Get In Touch
+            </a>
+
+            <p style={{ fontSize: 11, color: '#475569', marginTop: 14 }}>
+              {personalInfo.email}
+            </p>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  )
+}
+
+/* ── Video Modal ── */
+function VideoModal({ project, onClose }) {
+  useEffect(() => {
+    const onKey = e => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = '' }
+  }, [onClose])
+
+  // Detect local video vs YouTube
+  const isLocal = project.demo && (project.demo.endsWith('.mp4') || project.demo.startsWith('/'))
+
   const getEmbed = url => {
     if (!url) return null
+    if (isLocal) return url
     try {
       const u = new URL(url)
-      // youtube.com/shorts/ID
       if (u.hostname.includes('youtube.com') && u.pathname.startsWith('/shorts/')) {
-        const id = u.pathname.replace('/shorts/', '')
-        return `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`
+        return `https://www.youtube.com/embed/${u.pathname.replace('/shorts/', '')}?autoplay=1&rel=0`
       }
-      // youtube.com/watch?v=ID
       if (u.hostname.includes('youtube.com')) {
         const id = u.searchParams.get('v')
         return id ? `https://www.youtube.com/embed/${id}?autoplay=1&rel=0` : null
       }
-      // youtu.be/ID
       if (u.hostname === 'youtu.be') {
         return `https://www.youtube.com/embed${u.pathname}?autoplay=1&rel=0`
       }
@@ -48,16 +166,12 @@ function VideoModal({ project, onClose }) {
     <AnimatePresence>
       <motion.div
         key="modal-backdrop"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
         onClick={onClose}
         style={{
           position: 'fixed', inset: 0, zIndex: 9000,
-          background: 'rgba(0,0,0,0.88)',
-          backdropFilter: 'blur(8px)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          padding: 20,
+          background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(8px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20,
         }}
       >
         <motion.div
@@ -68,11 +182,9 @@ function VideoModal({ project, onClose }) {
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           onClick={e => e.stopPropagation()}
           style={{
-            width: '100%', maxWidth: 880,
+            width: '100%', maxWidth: isLocal ? 420 : 880,
             background: '#0d0820',
-            border: '1px solid rgba(108,99,255,0.3)',
-            borderRadius: 20,
-            overflow: 'hidden',
+            border: '1px solid rgba(108,99,255,0.3)', borderRadius: 20, overflow: 'hidden',
             boxShadow: '0 0 0 1px rgba(108,99,255,0.4), 0 30px 80px rgba(0,0,0,0.7), 0 0 60px rgba(108,99,255,0.15)',
           }}
         >
@@ -94,26 +206,24 @@ function VideoModal({ project, onClose }) {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
-              <a href={project.demo} target="_blank" rel="noreferrer"
-                style={{
-                  width: 34, height: 34, borderRadius: 9, border: 'none', cursor: 'pointer',
-                  background: 'rgba(255,255,255,0.07)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: '#94a3b8', textDecoration: 'none', transition: 'all 0.2s',
-                }}
-                title="Open in new tab"
-                onMouseEnter={e => { e.currentTarget.style.background='rgba(108,99,255,0.3)'; e.currentTarget.style.color='#fff' }}
-                onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.07)'; e.currentTarget.style.color='#94a3b8' }}
-              >
-                <FiExternalLink size={15} />
-              </a>
-              <button onClick={onClose}
-                style={{
-                  width: 34, height: 34, borderRadius: 9, border: 'none', cursor: 'pointer',
-                  background: 'rgba(255,255,255,0.07)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: '#94a3b8', transition: 'all 0.2s',
-                }}
+              {!isLocal && (
+                <a href={project.demo} target="_blank" rel="noreferrer"
+                  style={{
+                    width: 34, height: 34, borderRadius: 9, border: 'none', cursor: 'pointer',
+                    background: 'rgba(255,255,255,0.07)', color: '#94a3b8',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none', transition: 'all 0.2s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background='rgba(108,99,255,0.3)'; e.currentTarget.style.color='#fff' }}
+                  onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.07)'; e.currentTarget.style.color='#94a3b8' }}
+                >
+                  <FiExternalLink size={15} />
+                </a>
+              )}
+              <button onClick={onClose} style={{
+                width: 34, height: 34, borderRadius: 9, border: 'none', cursor: 'pointer',
+                background: 'rgba(255,255,255,0.07)', color: '#94a3b8',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s',
+              }}
                 onMouseEnter={e => { e.currentTarget.style.background='rgba(239,68,68,0.3)'; e.currentTarget.style.color='#fff' }}
                 onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.07)'; e.currentTarget.style.color='#94a3b8' }}
               >
@@ -123,60 +233,43 @@ function VideoModal({ project, onClose }) {
           </div>
 
           {/* Video */}
-          <div style={{ position: 'relative', paddingBottom: '56.25%', background: '#000' }}>
-            {embedUrl ? (
-              <iframe
-                src={embedUrl}
-                title={`${project.title} Demo`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                style={{
-                  position: 'absolute', inset: 0,
-                  width: '100%', height: '100%',
-                  border: 'none',
-                }}
-              />
-            ) : (
-              /* Placeholder when no URL yet */
-              <div style={{
-                position: 'absolute', inset: 0,
-                display: 'flex', flexDirection: 'column',
-                alignItems: 'center', justifyContent: 'center',
-                background: 'linear-gradient(135deg,#0d0820,#160a2e)',
-                gap: 16,
-              }}>
+          {isLocal ? (
+            <video
+              src={embedUrl}
+              controls autoPlay
+              style={{ width: '100%', display: 'block', background: '#000', maxHeight: '70vh' }}
+            />
+          ) : (
+            <div style={{ position: 'relative', paddingBottom: '56.25%', background: '#000' }}>
+              {embedUrl ? (
+                <iframe
+                  src={embedUrl}
+                  title={`${project.title} Demo`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
+                />
+              ) : (
                 <div style={{
-                  width: 72, height: 72, borderRadius: '50%',
-                  background: 'rgba(108,99,255,0.15)',
-                  border: '2px solid rgba(108,99,255,0.3)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  position: 'absolute', inset: 0,
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  background: 'linear-gradient(135deg,#0d0820,#160a2e)', gap: 16,
                 }}>
-                  <FiPlay size={28} style={{ color: '#a78bfa', marginLeft: 4 }} />
+                  <FiPlay size={28} style={{ color: '#a78bfa' }} />
+                  <p style={{ fontSize: 14, color: '#94a3b8' }}>Demo video coming soon</p>
                 </div>
-                <p style={{ fontSize: 15, fontWeight: 600, color: '#94a3b8' }}>
-                  Demo video coming soon
-                </p>
-                <p style={{ fontSize: 12, color: '#475569', maxWidth: 280, textAlign: 'center' }}>
-                  The demo for this project will be available shortly.
-                </p>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
 
-          {/* Footer — tags */}
-          <div style={{
-            padding: '12px 20px',
-            display: 'flex', flexWrap: 'wrap', gap: 6,
-            borderTop: '1px solid rgba(108,99,255,0.12)',
-          }}>
+          {/* Tags */}
+          <div style={{ padding: '12px 20px', display: 'flex', flexWrap: 'wrap', gap: 6, borderTop: '1px solid rgba(108,99,255,0.12)' }}>
             {project.tags.map((tag, i) => (
               <span key={i} style={{
                 fontSize: 11, padding: '3px 10px', borderRadius: 99, fontWeight: 600,
                 background: 'rgba(108,99,255,0.14)', color: '#a78bfa',
                 border: '1px solid rgba(108,99,255,0.22)',
-              }}>
-                {tag}
-              </span>
+              }}>{tag}</span>
             ))}
           </div>
         </motion.div>
@@ -187,10 +280,11 @@ function VideoModal({ project, onClose }) {
 
 /* ── Main Projects Section ── */
 export default function Projects({ darkMode }) {
-  const [ref, inView]       = useScrollReveal(0.05)
-  const [filter, setFilter] = useState('All')
+  const [ref, inView]         = useScrollReveal(0.05)
+  const [filter, setFilter]   = useState('All')
   const [showAll, setShowAll] = useState(false)
-  const [demoProject, setDemoProject] = useState(null)  // which project modal is open
+  const [demoProject, setDemoProject] = useState(null)
+  const [lockProject, setLockProject] = useState(null)
 
   const filtered  = filter === 'All' ? projects : projects.filter(p => p.category === filter)
   const displayed = showAll ? filtered : filtered.slice(0, 4)
@@ -202,19 +296,15 @@ export default function Projects({ darkMode }) {
 
   return (
     <section id="projects" style={{ padding: '80px 24px' }}>
-      {/* Video modal */}
-      {demoProject && (
-        <VideoModal project={demoProject} onClose={() => setDemoProject(null)} />
-      )}
+      {demoProject && <VideoModal project={demoProject} onClose={() => setDemoProject(null)} />}
+      {lockProject && <CodeLockModal project={lockProject} onClose={() => setLockProject(null)} />}
 
       <div style={{ maxWidth: 1100, margin: '0 auto' }} ref={ref}>
 
-        {/* ── Header ── */}
+        {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          style={{ marginBottom: 36 }}
+          initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }} style={{ marginBottom: 36 }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 20 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -222,14 +312,12 @@ export default function Projects({ darkMode }) {
                 <FiBriefcase size={20} style={{ color: '#6c63ff' }} />
               </div>
               <div>
-                <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#6c63ff', marginBottom: 2 }}>
-                  What I've Built
-                </p>
+                <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#6c63ff', marginBottom: 2 }}>What I've Built</p>
                 <h2 style={{ fontSize: 32, fontWeight: 900, color: strong, lineHeight: 1 }}>Projects</h2>
               </div>
             </div>
             <button onClick={() => setShowAll(s => !s)}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, color: '#6c63ff', background: 'none', border: 'none', cursor: 'pointer', padding: 0, transition: 'opacity 0.2s' }}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, color: '#6c63ff', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
               onMouseEnter={e => e.currentTarget.style.opacity = '0.7'}
               onMouseLeave={e => e.currentTarget.style.opacity = '1'}
             >
@@ -254,13 +342,12 @@ export default function Projects({ darkMode }) {
           </div>
         </motion.div>
 
-        {/* ── Grid ── */}
+        {/* Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(230px,1fr))', gap: 20 }}>
           <AnimatePresence mode="popLayout">
             {displayed.map((project, i) => (
               <motion.div
-                key={project.id}
-                layout
+                key={project.id} layout
                 initial={{ opacity: 0, y: 30, scale: 0.94 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
@@ -273,7 +360,7 @@ export default function Projects({ darkMode }) {
                   boxShadow: darkMode ? '0 4px 20px rgba(0,0,0,0.4)' : '0 4px 20px rgba(108,99,255,0.08)',
                 }}
               >
-                {/* Banner — screenshot or emoji */}
+                {/* Banner */}
                 <div style={{
                   height: 96, display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 44, flexShrink: 0, overflow: 'hidden',
@@ -282,11 +369,9 @@ export default function Projects({ darkMode }) {
                     : 'linear-gradient(135deg,rgba(108,99,255,0.10),rgba(167,139,250,0.06))',
                 }}>
                   {project.thumbnail ? (
-                    <img
-                      src={project.thumbnail}
-                      alt={project.title}
+                    <img src={project.thumbnail} alt={project.title}
                       style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center', display: 'block' }}
-                      onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex' }}
+                      onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }}
                     />
                   ) : null}
                   <div style={{ display: project.thumbnail ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', fontSize: 44 }}>
@@ -296,12 +381,8 @@ export default function Projects({ darkMode }) {
 
                 {/* Body */}
                 <div style={{ padding: '16px 16px 18px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                  <h3 style={{ fontSize: 13, fontWeight: 700, color: strong, marginBottom: 8, lineHeight: 1.4 }}>
-                    {project.title}
-                  </h3>
-                  <p style={{ fontSize: 12, lineHeight: 1.6, color: muted, marginBottom: 12, flex: 1 }}>
-                    {project.description}
-                  </p>
+                  <h3 style={{ fontSize: 13, fontWeight: 700, color: strong, marginBottom: 8, lineHeight: 1.4 }}>{project.title}</h3>
+                  <p style={{ fontSize: 12, lineHeight: 1.6, color: muted, marginBottom: 12, flex: 1 }}>{project.description}</p>
 
                   {/* Tags */}
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 14 }}>
@@ -309,54 +390,50 @@ export default function Projects({ darkMode }) {
                       <span key={ti} style={{
                         fontSize: 10, padding: '4px 9px', borderRadius: 99, fontWeight: 600,
                         background: darkMode ? 'rgba(108,99,255,0.18)' : 'rgba(108,99,255,0.09)',
-                        color: '#a78bfa',
-                        border: `1px solid ${darkMode ? 'rgba(108,99,255,0.3)' : 'rgba(108,99,255,0.2)'}`,
-                      }}>
-                        {tag}
-                      </span>
+                        color: '#a78bfa', border: `1px solid ${darkMode ? 'rgba(108,99,255,0.3)' : 'rgba(108,99,255,0.2)'}`,
+                      }}>{tag}</span>
                     ))}
                   </div>
 
-                  {/* Links row */}
+                  {/* Action row */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6 }}>
-                    {/* Left: View Project + Demo button */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                      <a href={project.github} target="_blank" rel="noreferrer"
-                        style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, fontWeight: 700, color: '#6c63ff', textDecoration: 'none', transition: 'gap 0.2s' }}
-                        onMouseEnter={e => e.currentTarget.style.gap = '9px'}
-                        onMouseLeave={e => e.currentTarget.style.gap = '5px'}>
-                        Code <FiArrowRight size={12} />
-                      </a>
-
-                      {/* Demo button — always shown, placeholder if no URL */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 7, flexWrap: 'wrap' }}>
+                      {/* Demo button */}
                       <button
                         onClick={() => setDemoProject(project)}
                         style={{
                           display: 'flex', alignItems: 'center', gap: 4,
                           fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 7,
                           border: 'none', cursor: 'pointer',
-                          background: project.demo
-                            ? 'linear-gradient(135deg,#6c63ff,#a78bfa)'
-                            : 'rgba(108,99,255,0.12)',
+                          background: project.demo ? 'linear-gradient(135deg,#6c63ff,#a78bfa)' : 'rgba(108,99,255,0.12)',
                           color: project.demo ? '#fff' : '#a78bfa',
-                          border: project.demo ? 'none' : '1px solid rgba(108,99,255,0.25)',
-                          transition: 'opacity 0.2s, transform 0.2s',
+                          outline: project.demo ? 'none' : '1px solid rgba(108,99,255,0.25)',
+                          transition: 'transform 0.2s',
                         }}
-                        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
-                        onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                        onMouseEnter={e => e.currentTarget.style.transform='scale(1.05)'}
+                        onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}
                       >
                         <FiPlay size={10} />
                         {project.demo ? 'Demo' : 'Demo Soon'}
                       </button>
-                    </div>
 
-                    {/* Right: GitHub icon */}
-                    <a href={project.github} target="_blank" rel="noreferrer"
-                      style={{ color: muted, textDecoration: 'none', display: 'flex', transition: 'color 0.2s', flexShrink: 0 }}
-                      onMouseEnter={e => e.currentTarget.style.color = '#6c63ff'}
-                      onMouseLeave={e => e.currentTarget.style.color = muted}>
-                      <FiGithub size={15} />
-                    </a>
+                      {/* Code — opens lock modal instead of GitHub */}
+                      <button
+                        onClick={() => setLockProject(project)}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 4,
+                          fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 7,
+                          border: '1px solid rgba(108,99,255,0.2)',
+                          background: 'rgba(108,99,255,0.06)',
+                          color: '#a78bfa', cursor: 'pointer',
+                          transition: 'all 0.2s',
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.background='rgba(108,99,255,0.2)'; e.currentTarget.style.transform='scale(1.05)' }}
+                        onMouseLeave={e => { e.currentTarget.style.background='rgba(108,99,255,0.06)'; e.currentTarget.style.transform='scale(1)' }}
+                      >
+                        <FiLock size={10} /> Code
+                      </button>
+                    </div>
                   </div>
                 </div>
               </motion.div>

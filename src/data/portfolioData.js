@@ -59,7 +59,7 @@ export const projects = [
     tags: ['Expo', 'Node.js', 'Firebase'],
     category: 'Mobile',
     github: 'https://github.com/Axlexl/adf',
-    demo: 'https://youtube.com/shorts/1yziATUUG9o?feature=share',
+    demo: '/adf.mp4',
     featured: true,
   },
 ]
