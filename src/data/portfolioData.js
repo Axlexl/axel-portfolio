@@ -62,6 +62,18 @@ export const projects = [
     demo: '/adf.mp4',
     featured: true,
   },
+  {
+    id: 5,
+    title: 'ApartmentSystem',
+    description: 'Apartment System helps apartment owners easily manage room rentals, track monthly rent, electricity, and water bills, and keep organized records of payments and billing history.',
+    image: '🏢',
+    thumbnail: '/apartment.jpg',
+    tags: ['Electron', 'Node.js', 'MySQL'],
+    category: 'Desktop',
+    github: 'https://github.com/Axlexl',
+    demo: 'https://youtu.be/hCv9_Spvjn8',
+    featured: true,
+  },
 ]
 
 export const skills = [
