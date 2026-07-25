@@ -50,6 +50,18 @@ export const projects = [
     demo: 'https://youtu.be/5HqkFvvos-s',
     featured: true,
   },
+  {
+    id: 4,
+    title: 'AllDayFad',
+    description: 'AllDayFad is an online booking platform for AllDayFade Barbershop, making it easy for customers to schedule appointments. It offers a simple and convenient way to book high-quality haircut services.',
+    image: '💈',
+    thumbnail: '/adf.jpg',
+    tags: ['Expo', 'Node.js', 'Firebase'],
+    category: 'Mobile',
+    github: 'https://github.com/Axlexl/adf',
+    demo: 'https://youtube.com/shorts/1yziATUUG9o?feature=share',
+    featured: true,
+  },
 ]
 
 export const skills = [

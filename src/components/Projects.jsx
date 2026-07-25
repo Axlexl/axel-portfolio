@@ -19,11 +19,16 @@ function VideoModal({ project, onClose }) {
     }
   }, [onClose])
 
-  // Convert YouTube watch URL → embed URL
+  // Convert YouTube watch / shorts / youtu.be URL → embed URL
   const getEmbed = url => {
     if (!url) return null
     try {
       const u = new URL(url)
+      // youtube.com/shorts/ID
+      if (u.hostname.includes('youtube.com') && u.pathname.startsWith('/shorts/')) {
+        const id = u.pathname.replace('/shorts/', '')
+        return `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`
+      }
       // youtube.com/watch?v=ID
       if (u.hostname.includes('youtube.com')) {
         const id = u.searchParams.get('v')
@@ -33,7 +38,6 @@ function VideoModal({ project, onClose }) {
       if (u.hostname === 'youtu.be') {
         return `https://www.youtube.com/embed${u.pathname}?autoplay=1&rel=0`
       }
-      // Already an embed or other URL — use directly
       return url
     } catch { return url }
   }
