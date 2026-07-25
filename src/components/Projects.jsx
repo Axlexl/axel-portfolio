@@ -102,12 +102,18 @@ function CodeLockModal({ project, onClose }) {
               feel free to contact me.
             </p>
 
-            {/* Contact button */}
-            <a
-              href={`mailto:${personalInfo.email}?subject=Inquiry about ${project.title} source code`}
+            {/* Get In Touch — closes modal and scrolls to contact section */}
+            <button
+              onClick={() => {
+                onClose()
+                setTimeout(() => {
+                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+                }, 300)
+              }}
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 8,
-                padding: '12px 24px', borderRadius: 12, textDecoration: 'none',
+                padding: '12px 32px', borderRadius: 12,
+                border: 'none', cursor: 'pointer',
                 background: 'linear-gradient(135deg,#6c63ff,#a78bfa)',
                 color: '#fff', fontWeight: 700, fontSize: 14,
                 boxShadow: '0 4px 20px rgba(108,99,255,0.4)',
@@ -117,7 +123,7 @@ function CodeLockModal({ project, onClose }) {
               onMouseLeave={e => { e.currentTarget.style.opacity='1'; e.currentTarget.style.transform='translateY(0)' }}
             >
               <FiMail size={15} /> Get In Touch
-            </a>
+            </button>
 
             <p style={{ fontSize: 11, color: '#475569', marginTop: 14 }}>
               {personalInfo.email}

@@ -52,7 +52,7 @@ export const projects = [
   },
   {
     id: 4,
-    title: 'AllDayFad',
+    title: 'AllDayFade',
     description: 'AllDayFad is an online booking platform for AllDayFade Barbershop, making it easy for customers to schedule appointments. It offers a simple and convenient way to book high-quality haircut services.',
     image: '💈',
     thumbnail: '/adf.jpg',
