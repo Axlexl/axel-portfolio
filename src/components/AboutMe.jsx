@@ -137,7 +137,7 @@ export default function AboutMe({ darkMode }) {
               boxShadow: darkMode?'0 4px 28px rgba(0,0,0,0.25)':'0 4px 28px rgba(108,99,255,0.08)' }}>
               {[
                 <>Hey there! I'm <strong style={{ color:'#a78bfa' }}>Axel Socobos</strong>, a 3rd Year IT student based in the Philippines. I'm passionate about creating meaningful software that solves real world problems.</>,
-                <>My journey started with curiosity  taking apart how websites work, experimenting with code, and never stopping. Today I build everything from web apps to mobile and desktop solutions.</>,
+                <>My journey started with curiosity taking apart how websites work, experimenting with code, and never stopping. Today I build everything from web apps to mobile and desktop solutions.</>,
                 <>When I'm not coding, you'll find me exploring new technologies, contributing to academic projects, and collaborating with others to bring ideas to life.</>,
               ].map((para, i) => (
                 <p key={i} style={{ fontSize:14, lineHeight:1.75, color:muted }}>{para}</p>

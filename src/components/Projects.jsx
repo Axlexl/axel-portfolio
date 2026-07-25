@@ -1,11 +1,73 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useScrollReveal } from '../hooks/useScrollReveal'
-import { FiBriefcase, FiArrowRight, FiPlay, FiX, FiExternalLink, FiLock, FiMail } from 'react-icons/fi'
+import { FiBriefcase, FiArrowRight, FiPlay, FiX, FiExternalLink, FiLock, FiMail, FiZoomIn } from 'react-icons/fi'
 import { projects } from '../data/portfolioData'
 import { personalInfo } from '../data/portfolioData'
 
 const categories = ['All', 'Web', 'Mobile', 'Desktop']
+
+/* ── Full-screen image lightbox ── */
+function ImageLightbox({ src, alt, onClose }) {
+  useEffect(() => {
+    const onKey = e => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = '' }
+  }, [onClose])
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        key="lightbox"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        style={{
+          position: 'fixed', inset: 0, zIndex: 9500,
+          background: 'rgba(0,0,0,0.95)',
+          backdropFilter: 'blur(12px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: 20, cursor: 'zoom-out',
+        }}
+      >
+        <button onClick={onClose} style={{
+          position: 'absolute', top: 20, right: 20,
+          width: 44, height: 44, borderRadius: '50%', border: 'none', cursor: 'pointer',
+          background: 'rgba(255,255,255,0.12)', color: '#fff',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          backdropFilter: 'blur(8px)', zIndex: 1,
+        }}>
+          <FiX size={20} />
+        </button>
+
+        <motion.img
+          src={src} alt={alt}
+          initial={{ scale: 0.85, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.85, opacity: 0 }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          onClick={e => e.stopPropagation()}
+          style={{
+            maxWidth: '95vw', maxHeight: '88vh',
+            objectFit: 'contain', borderRadius: 12, cursor: 'default',
+            boxShadow: '0 0 0 1px rgba(108,99,255,0.45), 0 40px 100px rgba(0,0,0,0.8)',
+          }}
+        />
+
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          style={{ position: 'absolute', bottom: 20, fontSize: 12, color: 'rgba(255,255,255,0.4)', fontWeight: 500 }}
+        >
+          {alt} · Click anywhere or press Esc to close
+        </motion.p>
+      </motion.div>
+    </AnimatePresence>
+  )
+}
 
 /* ── Code Lock Modal ── */
 function CodeLockModal({ project, onClose }) {
@@ -291,6 +353,7 @@ export default function Projects({ darkMode }) {
   const [showAll, setShowAll] = useState(false)
   const [demoProject, setDemoProject] = useState(null)
   const [lockProject, setLockProject] = useState(null)
+  const [lightboxImg, setLightboxImg] = useState(null)
 
   const filtered  = filter === 'All' ? projects : projects.filter(p => p.category === filter)
   const displayed = showAll ? filtered : filtered.slice(0, 4)
@@ -304,6 +367,7 @@ export default function Projects({ darkMode }) {
     <section id="projects" style={{ padding: '80px 24px' }}>
       {demoProject && <VideoModal project={demoProject} onClose={() => setDemoProject(null)} />}
       {lockProject && <CodeLockModal project={lockProject} onClose={() => setLockProject(null)} />}
+      {lightboxImg && <ImageLightbox src={lightboxImg.src} alt={lightboxImg.alt} onClose={() => setLightboxImg(null)} />}
 
       <div style={{ maxWidth: 1100, margin: '0 auto' }} ref={ref}>
 
@@ -370,19 +434,39 @@ export default function Projects({ darkMode }) {
               >
                 {/* Inner wrapper clips the content (image etc) without affecting glow */}
                 <div style={{ borderRadius: 20, overflow: 'hidden', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                {/* Banner */}
-                <div style={{
-                  height: 96, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 44, flexShrink: 0, overflow: 'hidden',
-                  background: darkMode
-                    ? 'linear-gradient(135deg,rgba(108,99,255,0.18),rgba(167,139,250,0.10))'
-                    : 'linear-gradient(135deg,rgba(108,99,255,0.10),rgba(167,139,250,0.06))',
-                }}>
+                {/* Banner — click to open fullscreen */}
+                <div
+                  onClick={() => project.thumbnail && setLightboxImg({ src: project.thumbnail, alt: project.title })}
+                  style={{
+                    height: 96, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 44, flexShrink: 0, overflow: 'hidden', position: 'relative',
+                    cursor: project.thumbnail ? 'zoom-in' : 'default',
+                    background: darkMode
+                      ? 'linear-gradient(135deg,rgba(108,99,255,0.18),rgba(167,139,250,0.10))'
+                      : 'linear-gradient(135deg,rgba(108,99,255,0.10),rgba(167,139,250,0.06))',
+                  }}
+                >
                   {project.thumbnail ? (
-                    <img src={project.thumbnail} alt={project.title}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center', display: 'block' }}
-                      onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }}
-                    />
+                    <>
+                      <img src={project.thumbnail} alt={project.title}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center', display: 'block', transition: 'transform 0.35s ease' }}
+                        onMouseEnter={e => e.target.style.transform = 'scale(1.08)'}
+                        onMouseLeave={e => e.target.style.transform = 'scale(1)'}
+                        onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }}
+                      />
+                      {/* Zoom overlay on hover */}
+                      <div style={{
+                        position: 'absolute', inset: 0,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        background: 'rgba(0,0,0,0)', transition: 'background 0.25s',
+                        color: 'transparent',
+                      }}
+                        onMouseEnter={e => { e.currentTarget.style.background='rgba(0,0,0,0.45)'; e.currentTarget.style.color='#fff' }}
+                        onMouseLeave={e => { e.currentTarget.style.background='rgba(0,0,0,0)'; e.currentTarget.style.color='transparent' }}
+                      >
+                        <FiZoomIn size={28} />
+                      </div>
+                    </>
                   ) : null}
                   <div style={{ display: project.thumbnail ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', fontSize: 44 }}>
                     {project.image}
