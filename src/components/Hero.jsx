@@ -30,8 +30,8 @@ const techIcons = [
 ]
 
 const stats = [
-  { value: '3+',     label: 'Years Learning',     icon: FiCalendar },
-  { value: '15+',    label: 'Projects Completed', icon: FiCode     },
+  { value: '2+',  label: 'Years Learning',     icon: FiCalendar },
+  { value: '5+',  label: 'Projects Completed', icon: FiCode     },
   { value: '10+',    label: 'Technologies',       icon: FiCpu      },
   { value: 'Always', label: 'Learning',           icon: FiZap      },
 ]

@@ -4,7 +4,7 @@ import { FiCode } from 'react-icons/fi'
 import {
   SiHtml5, SiCss, SiJavascript, SiReact, SiVite, SiTailwindcss,
   SiNodedotjs, SiExpress, SiMysql, SiCplusplus, SiDotnet, SiOpenjdk,
-  SiExpo, SiElectron, SiGit,
+  SiExpo, SiElectron,
 } from 'react-icons/si'
 
 const frontend = [
@@ -14,7 +14,6 @@ const frontend = [
   { name:'React.js',     level:'Intermediate', icon:SiReact,       color:'#61dafb' },
   { name:'Vite',         level:'Intermediate', icon:SiVite,        color:'#646cff' },
   { name:'Tailwind CSS', level:'Intermediate', icon:SiTailwindcss, color:'#06b6d4' },
-  { name:'Git',          level:'Intermediate', icon:SiGit,         color:'#f05032' },
 ]
 
 const backend = [
