@@ -279,7 +279,7 @@ export default memo(function LoadingScreen({ onComplete }) {
 
             {/* PORTFOLIO WEBSITE — characters drop in one by one */}
             <div style={{ marginBottom: 28, overflow: 'hidden' }}>
-              {'Portfolio Website'.split('').map((ch, i) => (
+              {'Portfolio'.split('').map((ch, i) => (
                 <motion.span
                   key={i}
                   initial={{ opacity: 0, y: 40 }}
